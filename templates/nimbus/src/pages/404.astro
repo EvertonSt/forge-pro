@@ -1,0 +1,41 @@
+---
+/* 404.astro — custom 404 page */
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Page Not Found">
+  <Nav />
+  <main id="main">
+    <section class="not-found section">
+      <div class="container not-found__inner">
+        <div class="not-found__code">404</div>
+        <h1 class="not-found__title">Page not found</h1>
+        <p class="not-found__subtitle">The page you're looking for doesn't exist or has been moved.</p>
+        <div class="not-found__actions">
+          <a href="/" class="btn btn--primary">Go Home</a>
+          <a href="/blog" class="btn btn--secondary">Read the Blog</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .not-found { text-align: center; min-height: 60vh; display: flex; align-items: center; }
+  .not-found__inner { display: flex; flex-direction: column; align-items: center; }
+  .not-found__code {
+    font-size: clamp(6rem, 10vw, 12rem); font-weight: 800;
+    background: linear-gradient(135deg, var(--brand-400), var(--brand-600));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; line-height: 1;
+  }
+  .not-found__title { font-size: var(--text-3xl); margin-bottom: var(--space-4); }
+  .not-found__subtitle {
+    font-size: var(--text-lg); color: var(--text-secondary);
+    max-width: 28rem; margin-bottom: var(--space-8);
+  }
+  .not-found__actions { display: flex; gap: var(--space-4); }
+</style>

@@ -1,0 +1,234 @@
+---
+import { getCollection } from 'astro:content';
+import './global.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+  currentSlug?: string;
+}
+
+const { title, description = "Quill — Beautiful documentation for modern products.", currentSlug } = Astro.props;
+
+const docs = await getCollection('docs');
+const sortedDocs = docs.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+const sections = [...new Set(sortedDocs.map(d => d.data.section))];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#7c3aed" />
+    <title>{title} | Quill Docs</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${title} | Quill Docs`} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={`${title} | Quill Docs`} />
+    <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'TechArticle', headline: title, description: description, publisher: { '@type': 'Organization', name: 'Quill' } })} />
+    <!-- Forge Pro verify tag — INSERT YOUR TOKEN BELOW -->
+    <!-- <meta name="forge-pro:verify" content="YOUR_TOKEN_HERE" /> -->
+    <script is:inline>
+      (function() {
+        var s = localStorage.getItem('theme');
+        if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches))
+          document.documentElement.setAttribute('data-theme', 'dark');
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <a href="#main" class="sr-only">Skip to main content</a>
+
+    <!-- Header -->
+    <header style="position: sticky; top: 0; z-index: 100; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); height: 3.5rem;">
+      <div style="max-width: 1400px; margin-inline: auto; padding-inline: clamp(1rem, 3vw, 2rem); display: flex; align-items: center; justify-content: space-between; height: 100%;">
+        <div style="display: flex; align-items: center; gap: var(--space-lg);">
+          <a href="/" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="var(--accent)"/><path d="M7 7h10M7 12h7M7 17h10" stroke="#fff" stroke-width="1.5" strokeLinecap="round"/></svg>
+            Quill
+          </a>
+          <span style="font-size: 0.75rem; color: var(--text-muted); border: 1px solid var(--border); padding: 0.15rem 0.5rem; border-radius: var(--radius);">Docs</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: var(--space-md);">
+          <div class="search-box" style="width: 240px;">
+            <input type="search" placeholder="Search docs..." aria-label="Search documentation" id="doc-search" />
+          </div>
+          <select class="version-switcher" aria-label="Version">
+            <option>v2 (Latest)</option>
+            <option>v1 (Legacy)</option>
+          </select>
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" style="color: var(--text-secondary); font-size: 1.1rem;" aria-label="GitHub">GitHub</a>
+          <button id="theme-toggle" aria-label="Toggle dark mode" style="background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 0.3rem 0.5rem; cursor: pointer; font-size: 1rem;">☀️</button>
+        </div>
+      </div>
+    </header>
+
+    <div style="display: flex; max-width: 1400px; margin-inline: auto;">
+      <!-- Sidebar -->
+      <aside class="docs-sidebar">
+        <div class="sidebar-section">
+          <div class="search-box" style="margin-bottom: var(--space-md); width: 100%;">
+            <input type="search" placeholder="Quick search..." aria-label="Search" id="sidebar-search" style="width: 100%;" />
+          </div>
+        </div>
+        {sections.map(section => (
+          <div class="sidebar-section">
+            <h3>{section}</h3>
+            {sortedDocs.filter(d => d.data.section === section).map(doc => (
+              <a href={`/docs/${doc.slug}`} class={`sidebar-link ${currentSlug === doc.slug ? 'active' : ''}`}>
+                {doc.data.title}
+              </a>
+            ))}
+          </div>
+        ))}
+      </aside>
+
+      <!-- Main Content -->
+      <main id="main" style="flex: 1; min-width: 0; padding: var(--space-xl) clamp(1.5rem, 4vw, 3rem);">
+        <slot />
+      </main>
+
+      <!-- TOC -->
+      <aside class="docs-toc" id="toc">
+        <h3>On This Page</h3>
+        <nav id="toc-nav"></nav>
+      </aside>
+    </div>
+
+    <script>
+      // Theme toggle
+      document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        const html = document.documentElement;
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        const btn = document.getElementById('theme-toggle');
+        if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
+      });
+      const stored = localStorage.getItem('theme');
+      const isDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      const btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = isDark ? '🌙' : '☀️';
+
+      // TOC generation
+      function buildTOC() {
+        const headings = document.querySelectorAll('.prose h2, .prose h3');
+        const tocNav = document.getElementById('toc-nav');
+        if (!tocNav || headings.length === 0) { document.getElementById('toc').style.display = 'none'; return; }
+        tocNav.innerHTML = '';
+        headings.forEach(h => {
+          const link = document.createElement('a');
+          link.className = 'toc-link' + (h.tagName === 'H3' ? ' indent' : '');
+          link.href = '#' + h.id;
+          link.textContent = h.textContent || '';
+          tocNav.appendChild(link);
+        });
+      }
+      buildTOC();
+
+      // Copy code buttons
+      document.querySelectorAll('pre').forEach(pre => {
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.textContent = 'Copy';
+        btn.addEventListener('click', () => {
+          const code = pre.querySelector('code')?.textContent || pre.textContent || '';
+          navigator.clipboard.writeText(code).then(() => {
+            btn.textContent = 'Copied!';
+            setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+          });
+        });
+        pre.appendChild(btn);
+      });
+
+      // Client-side search
+      const searchInput = document.getElementById('doc-search') || document.getElementById('sidebar-search');
+      searchInput?.addEventListener('input', () => {
+        // Simple highlight-based search feedback
+        const q = (searchInput as HTMLInputElement).value.toLowerCase();
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+          const text = link.textContent?.toLowerCase() || '';
+          (link as HTMLElement).style.display = !q || text.includes(q) ? '' : 'none';
+        });
+      });
+    </script>
+  
+
+<script>
+// Toast Notification System
+window.showToast = function(message, type = 'info', duration = 3000) {
+  let container = document.querySelector('.toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'polite');
+  container.appendChild(toast);
+  
+  // Trigger animation
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => toast.classList.add('show'));
+  });
+  
+  // Auto-dismiss
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+  
+  return toast;
+};
+
+// Keyboard shortcut handler
+document.addEventListener('keydown', (e) => {
+  // Escape closes modals/overlays
+  if (e.key === 'Escape') {
+    document.querySelectorAll('[data-modal], [data-overlay], .lightbox:not([hidden])').forEach(el => {
+      el.hidden = true;
+      el.removeAttribute('data-modal');
+    });
+  }
+});
+
+// Ripple effect on buttons
+document.addEventListener('mousedown', (e) => {
+  const btn = e.target.closest('.btn, button[role="button"]');
+  if (btn) {
+    const rect = btn.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    btn.style.setProperty('--ripple-x', x + '%');
+    btn.style.setProperty('--ripple-y', y + '%');
+  }
+});
+
+// Intersection Observer for scroll animations
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Forge Pro — templates and components, quality-tested before they ship.' } =
+  Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="border-b border-neutral-200 bg-white">
+      <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <a href="/" class="text-lg font-semibold tracking-tight">
+          Forge<span class="text-brand-600">Pro</span>
+        </a>
+        <div class="flex items-center gap-6 text-sm">
+          <a href="/templates" class="hover:text-brand-600">Browse</a>
+          <span
+            class="rounded-full border border-success-500/30 bg-success-500/10 px-3 py-1 text-xs font-medium text-success-600"
+          >
+            QA-verified catalog
+          </span>
+        </div>
+      </nav>
+    </header>
+
+    <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+      <slot />
+    </main>
+
+    <footer class="border-t border-neutral-200 bg-white py-8 text-center text-sm text-neutral-400">
+      Forge Pro — every listing is quality-tested before it goes live.
+    </footer>
+  </body>
+</html>

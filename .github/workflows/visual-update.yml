@@ -1,0 +1,166 @@
+name: visual-update
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: 'Branch to base the golden PR on (default: main)'
+        required: false
+        default: main
+        type: string
+      max_drift_ratio:
+        description: 'Strict max golden drift (0–1 fraction of pixels). Exceeding it blocks the PR.'
+        required: false
+        default: '0.05'
+        type: string
+
+# Regenerate the visual-regression goldens (apps/app/e2e/visual.spec.ts)
+# INSIDE the pinned e2e image — the same image the e2e CI job renders and
+# compares them in — then open a PR with the changes. Run this after any
+# intentional UI change that alters the dashboard or report views. Never
+# regenerate goldens on a host OS: font metrics differ and CI would fail.
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: ghcr.io/${{ github.repository_owner }}/forge-pro-e2e:v1.62
+      options: --ipc=host --init
+      # Same pnpm-store cache mount as the e2e CI job: the host temp dir is
+      # bind-mounted at /cache, actions/cache restores/saves it, and the
+      # in-container install reads/writes the same files. (The turbo cache is
+      # REMOTE now — Vercel Remote Cache via the OIDC step below.)
+      volumes:
+        - ${{ runner.temp }}/forge-pro-e2e-cache:/cache
+      env:
+        PNPM_STORE_DIR: /cache/pnpm-store
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.base_branch }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      # Vercel Remote Cache — only when TURBO_TEAM is configured; otherwise
+      # turbo runs on the per-run local cache only.
+      - uses: vercel/setup-turborepo-remote-cache-action@v1.0.0
+        if: ${{ vars.TURBO_TEAM != '' }}
+        with:
+          team: ${{ vars.TURBO_TEAM }}
+
+      - name: Restore pnpm store
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/forge-pro-e2e-cache/pnpm-store
+          key: visual-update-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-
+
+      - name: Install and build
+        run: |
+          pnpm install --frozen-lockfile --prefer-offline
+          pnpm turbo run build --filter=@forge-pro/app...
+
+      - name: Platform self-check
+        # Fail-fast smoke assertion: the committed goldens must be
+        # container-produced *-linux.png. A foreign -win32/-darwin.png file
+        # means a host-OS run leaked goldens the repo can't use — stop before
+        # the expensive install/build/regenerate steps.
+        run: node apps/app/scripts/golden-drift-check.mjs apps/app/e2e/visual.spec.ts-snapshots --check-platform
+
+      - name: Snapshot committed goldens
+        # Playwright updates snapshots IN PLACE (same -linux.png filenames),
+        # so the old copies are gone after regeneration. Back them up first;
+        # the drift gate compares the backup against the fresh files.
+        run: |
+          mkdir -p /tmp/goldens-before
+          cp -n apps/app/e2e/visual.spec.ts-snapshots/*-linux.png /tmp/goldens-before/ 2>/dev/null || true
+          ls -1 /tmp/goldens-before 2>/dev/null | sed 's/^/  backed up: /' || echo "  no committed goldens yet"
+
+      - name: Regenerate goldens
+        # The visual spec needs the local webServer (DEMO_FIXED_NOW / TZ
+        # pinning come from apps/app/playwright.config.ts); it runs via the
+        # same config the e2e job uses. --update-snapshots writes new
+        # -linux goldens (and refreshes changed ones) in the container, so
+        # the committed result matches what CI compares against.
+        run: pnpm --filter @forge-pro/app exec playwright test e2e/visual --update-snapshots
+
+      # The strict drift gate: compares the pre-regeneration goldens
+      # (/tmp/goldens-before) against the freshly regenerated ones
+      # (pixelmatch, same algorithm Playwright uses). Exceeding
+      # max_drift_ratio fails the workflow BEFORE the commit step runs, so an
+      # unintended large drift (font substitution, layout collapse) never
+      # reaches a PR — it just fails with a per-golden report. No committed
+      # goldens yet (first bootstrap) is a pass.
+      - name: Drift gate
+        # The per-golden report is captured for the PR body (the drift report
+        # artifact a reviewer sees without downloading anything) while tee
+        # keeps it visible in the live log; pipefail preserves the gate's
+        # failure exit code.
+        run: |
+          set -o pipefail
+          node apps/app/scripts/golden-drift-check.mjs apps/app/e2e/visual.spec.ts-snapshots --before /tmp/goldens-before --max-ratio ${{ inputs.max_drift_ratio }} 2>&1 | tee /tmp/drift-report.txt
+
+      # Persist the pnpm store for the next run. Save after the drift gate so
+      # a gate failure (which fails the job) doesn't even reach this step.
+      # (The turbo cache is remote — nothing to save.)
+      - name: Save pnpm store
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/forge-pro-e2e-cache/pnpm-store
+          key: visual-update-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Open golden PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No golden changes — nothing to do."
+            exit 0
+          fi
+          branch="visual-goldens-$(date +%Y%m%d-%H%M%S)"
+          git checkout -b "$branch"
+          git add apps/app/e2e/visual.spec.ts-snapshots
+          git commit -m "Update visual regression goldens
+
+          Regenerated inside the pinned e2e image (Dockerfile.e2e) via the
+          visual-update workflow."
+
+          # Token-in-URL push: works inside the container without depending
+          # on the checkout's remote auth.
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$branch"
+          body_file=/tmp/pr-body.md
+          {
+            echo "Regenerated by the visual-update workflow inside the pinned e2e image."
+            echo ""
+            echo "Review the diff: a golden change is expected when the UI changed intentionally (e.g. the dashboard or report views); a diff with no UI change usually means a font or layout regression."
+            echo ""
+            echo "### Drift report"
+            echo '```'
+            cat /tmp/drift-report.txt 2>/dev/null || echo "(no drift report captured)"
+            echo '```'
+          } > "$body_file"
+          pr_url=$(gh pr create \
+            --base "${{ inputs.base_branch }}" \
+            --head "$branch" \
+            --title "Update visual regression goldens" \
+            --body-file "$body_file")
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+
+      - name: Summary
+        run: |
+          echo "Golden regeneration complete."
+          echo "PR: ${{ steps.pr.outputs.pr_url }}"

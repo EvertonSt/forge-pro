@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Forge Pro — Desktop App Guide</title>
+<style>
+  :root {
+    --ink: #101828;
+    --ink-2: #344054;
+    --muted: #667085;
+    --line: #d0d5dd;
+    --bg: #ffffff;
+    --panel: #f9fafb;
+    --indigo: #4f46e5;
+    --indigo-soft: #eef2ff;
+    --green: #027a48;
+    --green-soft: #ecfdf3;
+    --red: #b42318;
+    --red-soft: #fef3f2;
+    --amber: #b54708;
+    --amber-soft: #fffaeb;
+    --blue-soft: #eff8ff;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 10.5pt; }
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    line-height: 1.55;
+    margin: 0;
+    background: var(--bg);
+  }
+  h1, h2, h3, h4 { font-family: "Segoe UI", Arial, sans-serif; color: var(--ink); line-height: 1.25; }
+  h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.6rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 2px solid var(--indigo);
+    color: var(--indigo);
+  }
+  h3 { font-size: 1.15rem; margin: 1.4rem 0 0.4rem; }
+  h4 { font-size: 1rem; margin: 1.1rem 0 0.3rem; }
+  p { margin: 0.45rem 0; }
+  ul, ol { margin: 0.45rem 0 0.6rem; padding-left: 1.35rem; }
+  li { margin: 0.22rem 0; }
+  a { color: var(--indigo); text-decoration: none; }
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 0.88em;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.05em 0.35em;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 0.85rem;
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 6px;
+    padding: 0.7rem 0.9rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin: 0.5rem 0;
+  }
+  pre code { background: none; border: none; color: inherit; padding: 0; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.6rem 0;
+    font-size: 0.95rem;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 0.4rem 0.6rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--indigo-soft); color: var(--ink); font-weight: 600; }
+
+  /* ---------- layout ---------- */
+  .page { padding: 0 1.1rem; }
+  .section { margin: 0 0 1.4rem; }
+  .avoid-break { break-inside: avoid; }
+
+  /* ---------- cover ---------- */
+  .cover {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem 2rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background:
+      radial-gradient(1200px 500px at 85% -10%, #e0e7ff 0%, rgba(224,231,255,0) 60%),
+      var(--bg);
+    text-align: left;
+  }
+  .cover .kicker {
+    display: inline-block;
+    background: var(--indigo);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1.2rem;
+  }
+  .cover h1 { font-size: 2.6rem; margin: 0 0 0.4rem; color: var(--ink); }
+  .cover .subtitle { font-size: 1.15rem; color: var(--muted); max-width: 44rem; margin-bottom: 1.6rem; }
+  .cover .meta { font-size: 0.9rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 0.9rem; max-width: 44rem; }
+  .cover .meta b { color: var(--ink); }
+
+  /* ---------- components ---------- */
+  .box {
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin: 0.7rem 0;
+    border: 1px solid transparent;
+  }
+  .box b:first-child { display: block; margin-bottom: 0.15rem; }
+  .box.step { background: var(--indigo-soft); border-color: #c7d2fe; }
+  .box.tip  { background: var(--green-soft); border-color: #a6f4c5; }
+  .box.warn { background: var(--amber-soft); border-color: #fedf89; }
+  .box.note { background: var(--blue-soft); border-color: #b2ddff; }
+  .box.danger { background: var(--red-soft); border-color: #fecdca; }
+
+  .chip {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .chip.gray  { background: #f2f4f7; color: var(--ink-2); }
+  .chip.blue  { background: var(--indigo-soft); color: var(--indigo); }
+  .chip.green { background: var(--green-soft); color: var(--green); }
+  .chip.red   { background: var(--red-soft); color: var(--red); }
+  .chip.amber { background: var(--amber-soft); color: var(--amber); }
+
+  .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem 1.2rem; margin: 0.5rem 0; }
+  .kv div b { display: block; color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  figure.shot { margin: 0.8rem 0; break-inside: avoid; }
+  figure.shot img {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(16,24,40,0.08);
+  }
+  figure.shot figcaption {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  .toc { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1.2rem; }
+  .toc ol { margin: 0.3rem 0; }
+  .toc li { margin: 0.28rem 0; }
+
+  .step-list > li { margin: 0.45rem 0; }
+  .flow {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem;
+    font-size: 0.92rem; margin: 0.6rem 0;
+  }
+  .flow .f { background: var(--indigo-soft); border: 1px solid #c7d2fe; border-radius: 6px; padding: 0.25rem 0.6rem; font-weight: 600; }
+  .flow .a { color: var(--muted); }
+
+  footer.page-foot {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    padding-top: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER ================= -->
+<div class="cover">
+  <span class="kicker">User Guide</span>
+  <h1>Forge Pro — Desktop App</h1>
+  <p class="subtitle">The vendor portal as a native Windows application. Submit templates and components, watch the automated QA gate pass or reject them, fix and resubmit, and take a listing from deployment to sale — all in demo mode, with no server, database, or internet required.</p>
+  <div class="meta">
+    <b>App:</b> Forge Pro Desktop v0.1.0 &nbsp;·&nbsp; <b>Installers:</b> <code>Forge Pro-Setup-0.1.0.exe</code> (NSIS, x64) &nbsp;·&nbsp; <b>In-app:</b> the vendor portal running its own production build
+  </div>
+</div>
+
+<!-- ================= TOC ================= -->
+<div class="page" style="page-break-before: always;">
+  <h2>Contents</h2>
+  <div class="toc">
+    <ol>
+      <li>What this app is (and what it is not)</li>
+      <li>Installation &amp; first launch</li>
+      <li>A tour of the window</li>
+      <li>Step-by-step: submit your first template</li>
+      <li>Reading a QA report</li>
+      <li>Fixing a rejection and resubmitting</li>
+      <li>Withdrawing a submission</li>
+      <li>Admin: approve vendors &amp; unpublish items</li>
+      <li>Example journeys — from deployment to sale</li>
+      <li>Tips, reset &amp; troubleshooting</li>
+      <li>Quick reference</li>
+    </ol>
+  </div>
+
+  <div class="box note avoid-break">
+    <b>Two roles, one window</b>
+    <div>The app has two built-in demo identities. As a <b>vendor</b> you create and manage submissions. As an <b>admin</b> you approve vendors and govern what goes live. You switch simply by visiting the right area — the dashboard is the vendor home, and the admin area is linked from it. No login screens; both are ready to use.</div>
+  </div>
+</div>
+
+<!-- ================= 1. WHAT ================= -->
+<div class="page">
+  <div class="section">
+    <h2>1 · What this app is (and what it is not)</h2>
+    <p>Forge Pro is an AI-native marketplace for website templates and UI components. Its defining feature is the <b>automated QA gate</b>: every vendor submission is tested by a real browser before it can go live — responsive checks, a broken-link crawl, visual regression, and Lighthouse performance/accessibility scores.</p>
+    <p>This desktop app wraps the <b>vendor portal</b> in a native Windows window. It runs the portal's real production build in <b>demo mode</b>: the data lives in a small file on your computer instead of a database, and the QA runner is simulated with one click. Everything you do works exactly the way it will in the live marketplace — that is the point of the demo.</p>
+
+    <h3>What's real</h3>
+    <ul>
+      <li>The full submission workflow: catalog details → preview-ownership proof → artifact upload → QA → publish/withdraw.</li>
+      <li>Real validation: URL rules, zip format and size checks, SHA-256 hashing, semver, price bounds.</li>
+      <li>Real QA report rendering: the same report contract the live runner produces, with score bars and failed checks.</li>
+      <li>Real admin governance: approve/revoke vendor applications, unpublish live items.</li>
+    </ul>
+
+    <h3>What's simulated (demo only)</h3>
+    <ul>
+      <li><b>Data:</b> a file-backed demo store (persisted in your user folder) instead of Supabase.</li>
+      <li><b>The QA run:</b> the "Simulate pass / Simulate reject" buttons stand in for the real CI runner. In production, a runner claims the job and reports back automatically.</li>
+      <li><b>Money:</b> prices are set and displayed; no real payments.</li>
+    </ul>
+
+    <div class="box tip avoid-break">
+      <b>Why demo mode is safe</b>
+      <div>No credentials, no cloud services, no network access are required. The app bundles its own server (Node runs inside the Electron binary) and its own browser runtime. You can use it anywhere, including fully offline.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>2 · Installation &amp; first launch</h2>
+    <h3>2.1 Install from the installer</h3>
+    <ol class="step-list">
+      <li>Double-click <code>Forge Pro-Setup-0.1.0.exe</code>.</li>
+      <li>If Windows shows a <b>SmartScreen</b> warning ("Windows protected your PC"), click <b>More info → Run anyway</b>. This happens because the installer is not code-signed yet — it is a normal caution for self-built apps. (See §10 for details.)</li>
+      <li>Choose an install folder (the default under <code>Program Files</code> is fine) and finish the wizard.</li>
+      <li>Launch <b>Forge Pro</b> from the Start menu or the desktop shortcut.</li>
+    </ol>
+    <div class="box tip avoid-break">
+      <b>Prefer running from the source?</b>
+      <div>If you develop the Forge Pro repo, <code>pnpm desktop:dev</code> stages the runtime and launches the shell without installing anything. <code>pnpm desktop:package</code> rebuilds the installer.</div>
+    </div>
+
+    <h3>2.2 First launch</h3>
+    <p>On launch, the app starts its bundled server, waits until the portal answers, and opens the <b>Vendor Dashboard</b>. A banner reminds you that data is simulated. The portal lives at <code>http://127.0.0.1:4310/vendor</code> — you can also open that address in a normal browser.</p>
+
+    <h3>2.3 Where your data lives</h3>
+    <div class="kv avoid-break">
+      <div><b>Demo store</b><code>%APPDATA%\Forge Pro\demo-store\</code></div>
+      <div><b>App settings</b><code>%APPDATA%\Forge Pro\</code></div>
+    </div>
+    <p>Everything you create (drafts, submissions, admin actions) is saved there and survives restarts. Deleting the <code>demo-store</code> folder resets the app to its factory demo data — see §10.</p>
+  </div>
+</div>
+
+<!-- ================= 3. TOUR ================= -->
+<div class="page">
+  <div class="section">
+    <h2>3 · A tour of the window</h2>
+    <h3>3.1 Vendor Dashboard (<code>/vendor</code>)</h3>
+    <p>This is your home screen. It lists every submission with a <b>status chip</b>, a <b>QA score</b> column (the composite from the latest report), and the key actions:</p>
+    <table class="avoid-break">
+      <tr><th>Status chip</th><th>Meaning</th><th>What you can do</th></tr>
+      <tr><td><span class="chip gray">draft</span></td><td>Started but not submitted</td><td>Open the form and continue</td></tr>
+      <tr><td><span class="chip blue">submitted</span> / <span class="chip blue">running</span></td><td>In the QA queue</td><td>View; simulate the runner (demo)</td></tr>
+      <tr><td><span class="chip green">qa_passed</span></td><td>Passed the gate</td><td>View report</td></tr>
+      <tr><td><span class="chip red">qa_rejected</span></td><td>Failed the gate</td><td>View report → fix → resubmit</td></tr>
+      <tr><td><span class="chip green">published</span></td><td>Live with the QA Verified badge</td><td>View</td></tr>
+      <tr><td><span class="chip gray">withdrawn</span></td><td>Pulled by you</td><td>View</td></tr>
+      <tr><td><span class="chip amber">unpublished</span></td><td>Removed by an admin</td><td>View</td></tr>
+    </table>
+
+    <figure class="shot">
+      <img src="img/dashboard.png" alt="The Forge Pro vendor dashboard">
+      <figcaption>The vendor dashboard: every submission with its status chip and QA score. (Demo data.)</figcaption>
+    </figure>
+
+    <h3>3.2 New submission (<code>/vendor/new</code>)</h3>
+    <p>A three-step wizard — catalog details, preview &amp; ownership, artifact &amp; version. §4 walks through it in full.</p>
+
+    <h3>3.3 Submission detail (<code>/vendor/submissions/{id}</code>)</h3>
+    <p>Each submission has its own page: the catalog info you entered, the preview URL, the artifact hash, the job's progress, and — in demo mode — the <b>Simulate pass / Simulate reject</b> buttons that stand in for the QA runner.</p>
+
+    <h3>3.4 Report view (<code>/vendor/submissions/{id}/report/{jobId}</code>)</h3>
+    <p>The full QA report: overall verdict, composite score, per-category score bars (performance, SEO, accessibility, best practices), the four suites' results, and failed checks with details. §5 covers reading it.</p>
+
+    <h3>3.5 Admin area</h3>
+    <ul>
+      <li><code>/admin/vendors</code> — vendor applications with <b>Approve / Revoke</b>.</li>
+      <li><code>/admin/submissions</code> — every submission in the marketplace with <b>Unpublish</b>.</li>
+    </ul>
+
+    <div class="box note avoid-break">
+      <b>One window, two hats</b>
+      <div>The admin views are part of the same demo store, so actions you take as admin (approving a vendor, unpublishing an item) are immediately visible on the vendor dashboard — a handy way to see how the two sides of the marketplace interact.</div>
+    </div>
+
+    <figure class="shot">
+      <img src="img/admin-vendors.png" alt="The admin vendor applications view">
+      <figcaption>Admin — vendor applications: review, approve, or revoke.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="img/admin-submissions.png" alt="The admin all-submissions view">
+      <figcaption>Admin — every submission in the marketplace, with unpublish control on live items.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<!-- ================= 4. SUBMIT ================= -->
+<div class="page">
+  <div class="section">
+    <h2>4 · Step-by-step: submit your first template</h2>
+    <p>We'll ship a landing-page template called <b>"Aurora Landing Page"</b> — the exact scenario a real vendor runs every day.</p>
+
+    <div class="flow avoid-break">
+      <span class="f">Deploy preview</span><span class="a">→</span>
+      <span class="f">Catalog details</span><span class="a">→</span>
+      <span class="f">Prove ownership</span><span class="a">→</span>
+      <span class="f">Upload zip</span><span class="a">→</span>
+      <span class="f">QA</span><span class="a">→</span>
+      <span class="f">Report</span><span class="a">→</span>
+      <span class="f">Publish &amp; sell</span>
+    </div>
+
+    <h3>Step 0 — Deploy a preview</h3>
+    <p>Before you submit, deploy the template somewhere reachable — your own host, a static host, or <code>localhost</code> during development. The QA gate tests <em>this</em> URL, so it must be the real, working site.</p>
+
+    <h3>Step 1 — Catalog details</h3>
+    <figure class="shot">
+      <img src="img/new-form.png" alt="Step 1 of the new submission form">
+      <figcaption>Step 1 — Catalog details. Each field validates as you go.</figcaption>
+    </figure>
+    <ol class="step-list">
+      <li>On the dashboard, click <b>New submission</b>.</li>
+      <li><b>Item type</b> — choose <b>Template</b> (choose <b>Component</b> for UI components; a <em>Component type</em> field then appears).</li>
+      <li><b>Title</b> — at least 3 characters, e.g. <code>Aurora Landing Page</code>.</li>
+      <li><b>Description</b> — at least 40 characters. Describe what it is, who it's for, what makes it good.</li>
+      <li><b>Framework</b> — <code>Astro</code>, <code>Next.js</code>, <code>React</code>, … (a suggestion list helps).</li>
+      <li><b>Category</b> — <code>landing-page</code>, <code>dashboard</code>, <code>forms</code>, …</li>
+      <li><b>Stack tags</b> — add up to 8, e.g. <code>Tailwind</code>, <code>TypeScript</code> (type, then Enter or comma).</li>
+      <li><b>Price</b> — between $0.01 and $500, with currency (USD / EUR / GBP / BRL). Example: <code>129</code> USD.</li>
+      <li><b>Screenshots</b> — optional, up to 6 images (5 MB each).</li>
+      <li>Click <b>Continue — preview &amp; ownership</b>.</li>
+    </ol>
+    <div class="box warn avoid-break">
+      <b>Validation is immediate</b>
+      <div>Each field is validated as you go (zod rules): title length, description minimum, price range, and — for components — a required component type. Fix the highlighted field to continue.</div>
+    </div>
+
+    <h3>Step 2 — Preview &amp; ownership</h3>
+    <p>Because the QA gate spends real CI minutes on your preview URL, Forge Pro requires proof you control it.</p>
+    <ol class="step-list">
+      <li>Enter your deployed <b>preview URL</b>. It must be <code>https</code> (or <code>localhost</code>/<code>127.0.0.1</code> during development).</li>
+      <li>The form shows a <b>verification token</b> and ready-made meta tag. Copy the tag and paste it into the <code>&lt;head&gt;</code> of your preview page, then deploy:
+<pre><code>&lt;meta name="forge-pro:verify" content="&lt;your-token&gt;" /&gt;</code></pre></li>
+      <li>Click <b>Verify ownership</b>. The app fetches your page and confirms the token is present → <span class="chip green">verified</span>.</li>
+      <li>Click <b>Continue — artifact &amp; version</b>.</li>
+    </ol>
+    <div class="box tip avoid-break">
+      <b>Local previews work</b>
+      <div>Run the site on <code>http://localhost:3000</code> while you build, add the token, and verify — no hosting needed to try the full loop.</div>
+    </div>
+
+    <h3>Step 3 — Artifact &amp; version</h3>
+    <ol class="step-list">
+      <li><b>Template source (zip)</b> — choose your <code>.zip</code>. Constraints: real zip (PK magic bytes), max <b>50 MB</b>. The app hashes it with SHA-256 and shows the size + hash preview.</li>
+      <li><b>Version</b> — semantic version, e.g. <code>1.0.0</code>.</li>
+      <li><b>Review</b> — check the summary (type, title, framework, stack, category, price, preview URL, version, ownership status).</li>
+      <li>Click <b>Submit for QA</b>.</li>
+    </ol>
+    <p>You land on the submission page. The status chip moves to <span class="chip blue">submitted</span> with a queued/running job — just like a real submission waiting for the runner. In demo mode the page shows the <b>Simulate pass / Simulate reject</b> controls that stand in for the runner.</p>
+
+    <figure class="shot">
+      <img src="img/submission.png" alt="A submission detail page with simulate controls">
+      <figcaption>The submission detail page — info, job state, and the demo runner controls.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<!-- ================= 5. REPORT ================= -->
+<div class="page">
+  <div class="section">
+    <h2>5 · Reading a QA report</h2>
+    <p>Open a submission and click into its report. This is the exact report contract the live runner produces — the same score bars, the same thresholds, the same layout your customers will see attached to a live listing.</p>
+
+    <h3>5.1 The verdict</h3>
+    <p>One of three outcomes:</p>
+    <ul>
+      <li><span class="chip green">passed</span> — every gate held. Eligible to go live with the QA Verified badge.</li>
+      <li><span class="chip red">rejected</span> — at least one suite failed. The report tells you exactly what and where.</li>
+      <li><span class="chip amber">error</span> — the run itself failed (infra, not quality). Retryable; never a verdict on your item.</li>
+    </ul>
+
+    <h3>5.2 The score bars</h3>
+    <p>Four Lighthouse categories, each with a minimum threshold and a <b>weighted composite</b> (the number in the dashboard's score column):</p>
+    <table class="avoid-break">
+      <tr><th>Category</th><th>Default minimum</th><th>Weight</th><th>What it measures</th></tr>
+      <tr><td>Performance</td><td>55</td><td>30%</td><td>Load speed, LCP, CLS, TBT</td></tr>
+      <tr><td>SEO</td><td>85</td><td>20%</td><td>Crawlability, meta, mobile-friendliness</td></tr>
+      <tr><td>Accessibility</td><td>85</td><td>35%</td><td>Contrast, labels, keyboard, ARIA</td></tr>
+      <tr><td>Best Practices</td><td>80</td><td>15%</td><td>HTTPS, console errors, modern APIs</td></tr>
+    </table>
+    <p>A pass requires <em>every</em> category at or above its minimum <em>and</em> the composite at or above 75. One weak category can sink the composite even when the others are strong — the report shows the math.</p>
+
+    <h3>5.3 The four suites</h3>
+    <ul>
+      <li><b>Smoke &amp; responsive</b> — the page loads at each breakpoint (320 → 1920 px) with no horizontal overflow, required elements visible, and zero error-level console messages.</li>
+      <li><b>Links</b> — a crawl of the preview site; every internal link must resolve (no 4xx/5xx).</li>
+      <li><b>Visual</b> — pixel diff against the previous baseline; must stay within the tolerance, or this run becomes the new baseline.</li>
+      <li><b>Lighthouse</b> — the scores above.</li>
+    </ul>
+
+    <h3>5.4 Failed checks &amp; the AI narrative</h3>
+    <p>A rejected report lists every failed check with a precise detail — e.g. <em>"scrollWidth 496px exceeds viewport width 320px"</em> or <em>"No visible element matching 'footer'"</em>. Rejected reports also include an <b>AI narrative</b>: a plain-language summary plus triaged issues, each with a suggested fix. It explains, it never decides — the verdict is the math.</p>
+
+    <figure class="shot">
+      <img src="img/report.png" alt="A rejected QA report with score bars and failed checks">
+      <figcaption>A rejected report: the composite, the four score bars, the failed suites, and the AI narrative with suggested fixes.</figcaption>
+    </figure>
+
+    <div class="box tip avoid-break">
+      <b>Read the report like a reviewer</b>
+      <div>Start with the composite and the suite that failed, then open the failed-check details. Every check carries enough context to reproduce the problem in your own browser — which is exactly how you fix it (next section).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 6. FIX & RESUBMIT ================= -->
+<div class="page">
+  <div class="section">
+    <h2>6 · Fixing a rejection and resubmitting</h2>
+    <p>Rejections are the gate working as intended — and they're routine. Here is the loop, using the dashboard kit <b>"Nimbus Dashboard Kit"</b> from the demo data as the example.</p>
+
+    <h3>6.1 What the rejection says</h3>
+    <p>The demo kit's report shows: horizontal overflow at 320px (a grid with a fixed <code>min-width</code>), a footer hidden by a media query at tablet width, a client-side error (<code>products.map is not defined</code>), 2 broken links, and accessibility below 85. Each item maps to a concrete fix:</p>
+    <ul>
+      <li><code>minmax(0, 1fr)</code> grid columns (or <code>overflow-x: clip</code>) — kills the 320px overflow.</li>
+      <li>Check the footer's breakpoint media query — it targets 1024px while the layout switches at 1280px.</li>
+      <li>Guard the render while data loads (default to <code>[]</code>).</li>
+      <li>Fix the 404 links; add labels/contrast for accessibility.</li>
+    </ul>
+
+    <h3>6.2 Resubmit</h3>
+    <ol class="step-list">
+      <li>Fix the code in your project, rebuild the zip, bump the version to <code>1.1.0</code>.</li>
+      <li>From the rejected submission page, start a resubmission (the same three-step flow).</li>
+      <li>The gate runs again against the new artifact — the report and badge always describe the artifact hash they tested.</li>
+      <li>Pass → the listing moves toward <span class="chip green">published</span> with the new report attached.</li>
+    </ol>
+
+    <div class="box note avoid-break">
+      <b>Why versions matter</b>
+      <div>Each submission records <code>submittedVersion</code> and the artifact's SHA-256. A verdict is only meaningful for the exact artifact tested — resubmitting with a bumped version keeps the audit trail honest.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>7 · Withdrawing a submission</h2>
+    <p>You can withdraw a <b>draft</b>, a <b>submitted</b> item still in the queue, or a <b>rejected</b> item you'd rather shelve than fix. Withdrawn items keep their history but leave the marketplace flow.</p>
+    <div class="box warn avoid-break">
+      <b>You can't withdraw a published listing from the vendor side</b>
+      <div>Once live, unpublishing is an admin action (see §8) — that separation is deliberate: vendors manage submissions, admins govern the catalog.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 8. ADMIN ================= -->
+<div class="page">
+  <div class="section">
+    <h2>8 · Admin: approve vendors &amp; unpublish items</h2>
+    <p>Switch hats and visit the admin area — the marketplace operator's side of the window.</p>
+
+    <h3>8.1 Vendor applications (<code>/admin/vendors</code>)</h3>
+    <p>New vendors apply with a bio, website, and role. Review the application and click:</p>
+    <ul>
+      <li><b>Approve</b> — the application flips to approved and the user's role becomes <em>vendor</em>.</li>
+      <li><b>Revoke</b> — removes vendor status (role back to <em>buyer</em>); the same control doubles as the "fire the vendor" lever.</li>
+    </ul>
+    <p>The demo data ships with two pending applications (Maya Chen, Jon Rivers) and one approved vendor (Diego Souza) so you can approve, revoke, and re-approve freely.</p>
+
+    <h3>8.2 All submissions (<code>/admin/submissions</code>)</h3>
+    <p>Every submission in the marketplace, with vendor names and statuses. Click <b>Unpublish</b> on any live item to take it down. The item immediately shows the <span class="chip amber">unpublished</span> tag on the vendor dashboard and disappears from the live catalog.</p>
+
+    <div class="box tip avoid-break">
+      <b>Governance, end to end</b>
+      <div>Approve a vendor → that vendor's submissions appear in your admin list → unpublish one and watch the tag ripple through both dashboards. The demo is a working model of the marketplace's trust layer.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 9. JOURNEYS ================= -->
+<div class="page">
+  <div class="section">
+    <h2>9 · Example journeys — from deployment to sale</h2>
+
+    <div class="box step avoid-break">
+      <b>Case A · Ship a landing-page template (the happy path)</b>
+      <div>
+        <ol class="step-list">
+          <li>You build "Aurora Landing Page" and deploy a preview with the verification meta tag.</li>
+          <li>New submission → Template → fill catalog details → verify ownership → upload the zip → <b>Submit for QA</b>.</li>
+          <li>Simulate the runner → <b>Simulate pass</b>.</li>
+          <li>Open the report: composite 84.2, all four suites green, 0 failed checks.</li>
+          <li>The listing is <span class="chip green">published</span> with the QA Verified badge and its score attached — buyers see a machine-tested item, not a promise.</li>
+          <li>Sale: the price you set ($129) is what the marketplace charges; licenses and checkout are the live system's job. In the demo, the money step is represented by the price on the listing.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="box step avoid-break">
+      <b>Case B · Fix a rejected dashboard kit (the iteration loop)</b>
+      <div>
+        <ol class="step-list">
+          <li>"Nimbus Dashboard Kit" comes back <span class="chip red">rejected</span> — overflow at 320px, a hidden footer, a runtime error, 2 broken links, accessibility 64.</li>
+          <li>The AI narrative groups the issues with suggested fixes; the failed-check list pinpoints each line.</li>
+          <li>You fix the grid, guard the render, repair the links, bump to 0.9.2, resubmit.</li>
+          <li>This time it passes — the report now shows the new artifact's hash and score. Rejection isn't a dead end; it's the gate teaching your code to pass.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="box step avoid-break">
+      <b>Case C · Run the marketplace as an operator</b>
+      <div>
+        <ol class="step-list">
+          <li>A new vendor applies → you approve them in <code>/admin/vendors</code>; their submissions appear in your admin list.</li>
+          <li>One of their items goes live, then a support report flags it → <b>Unpublish</b> from <code>/admin/submissions</code>.</li>
+          <li>The vendor dashboard instantly shows the <span class="chip amber">unpublished</span> tag; the item is out of the catalog.</li>
+          <li>If trust breaks down, <b>Revoke</b> removes the vendor role entirely.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="box step avoid-break">
+      <b>Case D · Withdraw a listing you no longer want to ship</b>
+      <div>
+        <ol class="step-list">
+          <li>You submitted a form kit, but the scope changed mid-QA. From the submission page, <b>Withdraw</b>.</li>
+          <li>The status becomes <span class="chip gray">withdrawn</span>; the row stays in your history with its (partial) report.</li>
+          <li>Start fresh whenever you're ready — drafts and submissions are cheap; the gate is the expensive part, and you only pay it on purpose.</li>
+        </ol>
+      </div>
+    </div>
+
+    <h3>The honest map: demo → production</h3>
+    <table class="avoid-break">
+      <tr><th>Step</th><th>In the desktop demo</th><th>In the live marketplace</th></tr>
+      <tr><td>Submit</td><td>Same form, same validation</td><td>Same form; real storage + zip hashing server-side</td></tr>
+      <tr><td>QA</td><td>"Simulate pass/reject" buttons</td><td>A real runner claims the job, runs the suites in a browser, posts the report back</td></tr>
+      <tr><td>Report</td><td>Real report contract with demo numbers</td><td>Real numbers from the real run</td></tr>
+      <tr><td>Publish</td><td>Status advances in the demo store</td><td>Auto-publish writes the Sanity doc, sets the badge, moves the zip to storage</td></tr>
+      <tr><td>Sale</td><td>Price displayed on the listing</td><td>Stripe checkout, licenses, subscriptions</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ================= 10. TIPS ================= -->
+<div class="page">
+  <div class="section">
+    <h2>10 · Tips, reset &amp; troubleshooting</h2>
+
+    <h3>Reset to the factory demo</h3>
+    <ol class="step-list">
+      <li>Close Forge Pro.</li>
+      <li>Delete the folder <code>%APPDATA%\Forge Pro\demo-store</code>.</li>
+      <li>Relaunch — the app reseeds its original demo data on first load.</li>
+    </ol>
+
+    <h3>Common issues</h3>
+    <table class="avoid-break">
+      <tr><th>Symptom</th><th>Cause / fix</th></tr>
+      <tr><td>SmartScreen warning on install</td><td>Installer is not code-signed. Click <b>More info → Run anyway</b>. A signed build removes this (see below).</td></tr>
+      <tr><td>"The portal runtime is missing" dialog</td><td>The bundled runtime wasn't staged. In a dev checkout, run <code>pnpm desktop:prepare</code> then relaunch.</td></tr>
+      <tr><td>"Could not start the portal" / port busy</td><td>Another instance or app holds port 4310. Set <code>FORGE_PORT</code> to a free port before launching (the app reads it from the environment).</td></tr>
+      <tr><td>Second launch opens but no new window</td><td>Single-instance lock: the first window is focused instead — by design.</td></tr>
+      <tr><td>Dashboard looks empty</td><td>The demo store was reset or is from an old format; relaunch once or delete <code>demo-store</code> to reseed.</td></tr>
+      <tr><td>Simulate buttons missing</td><td>Simulation only appears for <em>submitted</em> items with a queued job — and only in demo mode.</td></tr>
+    </table>
+
+    <h3>Good habits</h3>
+    <ul>
+      <li><b>Verify before you submit.</b> The ownership proof exists because QA runs cost real resources; a failing verification means the gate would test the wrong thing.</li>
+      <li><b>Keep preview URLs stable.</b> The report is bound to the URL and artifact hash tested. Redeploying after a pass invalidates nothing, but re-running QA against a changed preview is the honest move.</li>
+      <li><b>Bump versions on every resubmission.</b> It keeps the audit trail and the badge honest.</li>
+      <li><b>Use the admin views as your quality review.</b> Approve slowly, unpublish fast — that's the trust loop the whole product is built on.</li>
+    </ul>
+
+    <div class="box note avoid-break">
+      <b>Making the installer production-ready</b>
+      <div>For distribution beyond your own machine: add an application icon (electron-builder <code>win.icon</code>), sign the installer with a code-signing certificate to remove the SmartScreen warning, and rebuild with <code>pnpm desktop:package</code>. The build is fully reproducible from the Forge Pro repo.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 11. QUICK REF ================= -->
+<div class="page">
+  <div class="section">
+    <h2>11 · Quick reference</h2>
+
+    <h3>Inside the app</h3>
+    <table class="avoid-break">
+      <tr><th>Where</th><th>URL</th><th>What it's for</th></tr>
+      <tr><td>Vendor dashboard</td><td><code>/vendor</code></td><td>All your submissions, statuses, scores</td></tr>
+      <tr><td>New submission</td><td><code>/vendor/new</code></td><td>The 3-step wizard</td></tr>
+      <tr><td>Submission detail</td><td><code>/vendor/submissions/{id}</code></td><td>Info, job state, simulate buttons</td></tr>
+      <tr><td>QA report</td><td><code>/vendor/submissions/{id}/report/{jobId}</code></td><td>Full report + failed checks</td></tr>
+      <tr><td>Admin — vendors</td><td><code>/admin/vendors</code></td><td>Approve / revoke applications</td></tr>
+      <tr><td>Admin — submissions</td><td><code>/admin/submissions</code></td><td>All submissions + unpublish</td></tr>
+    </table>
+
+    <h3>Submission rules you'll hit</h3>
+    <ul>
+      <li>Preview URL must be <code>https</code> (or <code>localhost</code>).</li>
+      <li>Ownership: a <code>forge-pro:verify</code> meta tag must be present on the preview page.</li>
+      <li>Zip: real zip format, ≤ 50 MB, SHA-256 hashed.</li>
+      <li>Version: semver. Price: $0.01–$500. Description: ≥ 40 chars. Stack tags: ≤ 8.</li>
+      <li>QA thresholds: performance 55 · SEO 85 · accessibility 85 · best practices 80 · composite 75 (platform-owned).</li>
+    </ul>
+
+    <h3>From the terminal (development)</h3>
+    <table class="avoid-break">
+      <tr><th>Command</th><th>What it does</th></tr>
+      <tr><td><code>pnpm desktop:dev</code></td><td>Stage the runtime and launch the shell</td></tr>
+      <tr><td><code>pnpm desktop:prepare</code></td><td>Rebuild + restage the runtime after app changes</td></tr>
+      <tr><td><code>pnpm desktop:package</code></td><td>Build the Windows installer (NSIS, x64)</td></tr>
+      <tr><td><code>FORGE_PORT=4310 pnpm desktop:dev</code></td><td>Run on a specific port</td></tr>
+    </table>
+
+    <footer class="page-foot">
+      Forge Pro — Desktop App Guide · v0.1.0 · The desktop app runs the vendor portal in demo mode; see the repo README and <code>docs/vendor-portal.md</code> for the full submission state machine and QA gate design.
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>

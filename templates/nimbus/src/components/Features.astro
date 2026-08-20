@@ -1,0 +1,195 @@
+---
+/* Features.astro — live feature tabs with animated content */
+const features = [
+  {
+    id: 'automate',
+    label: 'Automate',
+    title: 'AI-Powered Code Review',
+    description: 'Nimbus analyzes every pull request in seconds — catching bugs, suggesting improvements, and enforcing your team\'s conventions automatically.',
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>`,
+    points: ['95% bug detection accuracy', 'Custom rule engine', 'Slack & GitHub integration', 'Auto-fix suggestions'],
+  },
+  {
+    id: 'ship',
+    label: 'Ship',
+    title: 'One-Click Deployments',
+    description: 'Push to main and Nimbus handles the rest — building, testing, and deploying to your infrastructure with zero downtime and full rollback support.',
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
+    points: ['Instant rollbacks', 'Preview environments', 'Multi-cloud support', 'Deployment analytics'],
+  },
+  {
+    id: 'scale',
+    label: 'Scale',
+    title: 'Intelligent Infrastructure',
+    description: 'Nimbus monitors your production systems in real-time and auto-scales based on traffic patterns, cost constraints, and performance SLAs.',
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>`,
+    points: ['Predictive scaling', 'Cost optimization', 'SLA monitoring', '99.99% uptime SLA'],
+  },
+];
+---
+
+<section class="features section" id="features">
+  <div class="container">
+    <div class="features__header">
+      <span class="chip">Features</span>
+      <h2 class="features__title">Everything you need to ship faster</h2>
+      <p class="features__subtitle">Three pillars of modern software delivery, unified in one platform.</p>
+    </div>
+
+    <div class="features__tabs" role="tablist" aria-label="Feature categories">
+      {features.map((f, i) => (
+        <button
+          class={`features__tab ${i === 0 ? 'active' : ''}`}
+          role="tab"
+          aria-selected={i === 0 ? 'true' : 'false'}
+          aria-controls={`panel-${f.id}`}
+          id={`tab-${f.id}`}
+          data-tab={f.id}
+        >
+          {f.label}
+        </button>
+      ))}
+    </div>
+
+    <div class="features__panels">
+      {features.map((f, i) => (
+        <div
+          class={`features__panel ${i === 0 ? 'active' : ''}`}
+          role="tabpanel"
+          id={`panel-${f.id}`}
+          aria-labelledby={`tab-${f.id}`}
+          hidden={i !== 0}
+        >
+          <div class="features__panel-content">
+            <div class="features__panel-icon" set:html={f.icon} />
+            <h3 class="features__panel-title">{f.title}</h3>
+            <p class="features__panel-desc">{f.description}</p>
+            <ul class="features__panel-list">
+              {f.points.map(p => (
+                <li class="features__panel-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,8 7,12 13,4"/></svg>
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="features__panel-visual">
+            <div class="features__screenshot">
+              <div class="features__screenshot-bar">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="features__screenshot-body">
+                {f.id === 'automate' && (
+                  <div class="features__code-block">
+                    <div class="code-line"><span class="code-add">+ const review = await nimbus.analyze(pr);</span></div>
+                    <div class="code-line"><span class="code-add">+ if (review.hasBugs) await nimbus.suggestFix(pr);</span></div>
+                    <div class="code-line"><span class="code-comment">// 3 issues found, 2 auto-fixable</span></div>
+                    <div class="code-line"><span class="code-metric">✓ Detection: 95% accuracy</span></div>
+                  </div>
+                )}
+                {f.id === 'ship' && (
+                  <div class="features__code-block">
+                    <div class="code-line"><span class="code-add">→ Building... ✓</span></div>
+                    <div class="code-line"><span class="code-add">→ Testing... ✓</span></div>
+                    <div class="code-line"><span class="code-add">→ Deploying to prod... ✓</span></div>
+                    <div class="code-line"><span class="code-metric">✓ Live at nimbus-app.vercel.app</span></div>
+                  </div>
+                )}
+                {f.id === 'scale' && (
+                  <div class="features__code-block">
+                    <div class="code-line"><span class="code-metric">CPU: 42% → 87% (scaling)</span></div>
+                    <div class="code-line"><span class="code-add">→ 4 instances added</span></div>
+                    <div class="code-line"><span class="code-metric">Latency p99: 45ms ✓</span></div>
+                    <div class="code-line"><span class="code-metric">Cost: $2.40/hr (within budget)</span></div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .features { background: var(--bg-secondary); }
+  .features__header { text-align: center; margin-bottom: var(--space-12); }
+  .features__title {
+    font-size: var(--text-4xl); margin-top: var(--space-4); margin-bottom: var(--space-4);
+  }
+  .features__subtitle {
+    font-size: var(--text-lg); color: var(--text-secondary); max-width: 32rem; margin-inline: auto;
+  }
+  .features__tabs {
+    display: flex; justify-content: center; gap: var(--space-2);
+    margin-bottom: var(--space-10);
+  }
+  .features__tab {
+    padding: var(--space-2) var(--space-5); border-radius: var(--radius-full);
+    font-size: var(--text-sm); font-weight: 600; color: var(--text-secondary);
+    border: 1px solid transparent; transition: all var(--duration) var(--ease);
+  }
+  .features__tab:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+  .features__tab.active {
+    color: var(--accent); background: var(--accent-light); border-color: rgba(99,102,241,0.15);
+  }
+  .features__panel {
+    display: none; grid-template-columns: 1fr 1fr; gap: var(--space-12); align-items: center;
+  }
+  .features__panel.active { display: grid; animation: fade-in-up 0.5s var(--ease); }
+  .features__panel-icon { margin-bottom: var(--space-4); }
+  .features__panel-title { font-size: var(--text-3xl); margin-bottom: var(--space-4); }
+  .features__panel-desc {
+    font-size: var(--text-base); color: var(--text-secondary); margin-bottom: var(--space-6); line-height: 1.7;
+  }
+  .features__panel-list { display: flex; flex-direction: column; gap: var(--space-3); }
+  .features__panel-item {
+    display: flex; align-items: center; gap: var(--space-3);
+    font-size: var(--text-sm); font-weight: 500;
+  }
+  .features__screenshot {
+    background: var(--bg-primary); border-radius: var(--radius-xl);
+    border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-lg);
+  }
+  .features__screenshot-bar {
+    display: flex; gap: 6px; padding: var(--space-3) var(--space-4);
+    background: var(--bg-tertiary); border-bottom: 1px solid var(--border);
+  }
+  .features__screenshot-bar span {
+    width: 10px; height: 10px; border-radius: var(--radius-full);
+  }
+  .features__screenshot-bar span:nth-child(1) { background: #ef4444; }
+  .features__screenshot-bar span:nth-child(2) { background: #f59e0b; }
+  .features__screenshot-bar span:nth-child(3) { background: #22c55e; }
+  .features__screenshot-body { padding: var(--space-6); }
+  .features__code-block { display: flex; flex-direction: column; gap: var(--space-2); font-family: var(--font-mono); font-size: var(--text-sm); }
+  .code-line { padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
+  .code-add { color: #22c55e; }
+  .code-comment { color: var(--text-tertiary); }
+  .code-metric { color: var(--brand-400); }
+  @media (max-width: 768px) {
+    .features__panel.active { grid-template-columns: 1fr; }
+    .features__panel-visual { order: -1; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.features__tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.features__tab').forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.features__panel').forEach(p => {
+        p.classList.remove('active');
+        p.hidden = true;
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      const panel = document.getElementById(`panel-${(tab as HTMLElement).dataset.tab}`);
+      panel?.classList.add('active');
+      panel.hidden = false;
+    });
+  });
+</script>

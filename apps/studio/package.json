@@ -1,0 +1,29 @@
+{
+  "name": "@forge-pro/studio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "seed": "node --env-file-if-exists=.env scripts/seed.mjs",
+    "test": "echo \"No studio tests — schema validation happens in the Studio UI.\""
+  },
+  "dependencies": {
+    "@forge-pro/cms": "workspace:*",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sanity": "^6.9.0",
+    "styled-components": "^6.1.17"
+  },
+  "devDependencies": {
+    "@forge-pro/config": "workspace:*",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "eslint": "^10.8.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.66.0"
+  }
+}

@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge-Pro — Complete User Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+  
+  @page {
+    size: A4;
+    margin: 20mm 18mm;
+    @bottom-center { content: counter(page); font-size: 10px; color: #94a3b8; }
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 11pt;
+    line-height: 1.65;
+    color: #1e293b;
+    background: #fff;
+  }
+  
+  /* Cover Page */
+  .cover {
+    page-break-after: always;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    color: white;
+    margin: -20mm -18mm;
+    padding: 40mm 30mm;
+  }
+  .cover-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #818cf8;
+    margin-bottom: 2rem;
+  }
+  .cover h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+  .cover h1 span { color: #818cf8; }
+  .cover p {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    max-width: 500px;
+    margin-bottom: 2rem;
+  }
+  .cover-meta {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 3rem;
+  }
+  
+  /* Headings */
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 2rem 0 1rem;
+    letter-spacing: -0.02em;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+  }
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 1.5rem 0 0.75rem;
+  }
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 1.2rem 0 0.5rem;
+  }
+  
+  /* Content */
+  p { margin-bottom: 0.75rem; }
+  strong { font-weight: 600; }
+  
+  /* Code */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: #f1f5f9;
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    color: #e11d48;
+  }
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 0.75rem 0 1rem;
+    page-break-inside: avoid;
+  }
+  pre code { background: none; color: inherit; padding: 0; }
+  
+  /* Lists */
+  ul, ol { padding-left: 1.5em; margin-bottom: 0.75rem; }
+  li { margin-bottom: 0.3rem; }
+  
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  th, td {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+  }
+  th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+  }
+  
+  /* Callouts */
+  .callout {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    page-break-inside: avoid;
+  }
+  .callout-info {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+  }
+  .callout-success {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+  }
+  .callout-warning {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+  }
+  .callout-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  /* Boxes */
+  .step-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    page-break-inside: avoid;
+  }
+  .step-number {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background: #6366f1;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+  }
+  
+  /* Template cards */
+  .template-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .template-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem;
+    page-break-inside: avoid;
+  }
+  .template-card h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .template-card p {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0;
+  }
+  .template-tag {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    background: #e0e7ff;
+    color: #4338ca;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+  
+  /* Page breaks */
+  .page-break { page-break-before: always; }
+  
+  /* Footer */
+  .footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="cover-badge">Documentation v1.0</div>
+  <h1>Forge-<span>Pro</span></h1>
+  <p>Complete User Guide — From installation to deployment, everything you need to build, customize, and sell premium website templates.</p>
+  <div class="cover-meta">
+    <p>10 Premium Templates • 5 Frameworks • Free Deployment</p>
+    <p style="margin-top: 1rem;">August 2026</p>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<h1>Table of Contents</h1>
+<ol style="font-size: 1.05rem; line-height: 2;">
+  <li><strong>Introduction</strong> — What is Forge-Pro?</li>
+  <li><strong>Quick Start</strong> — Get running in 5 minutes</li>
+  <li><strong>The 10 Templates</strong> — Overview and use cases</li>
+  <li><strong>Local Development</strong> — Running templates locally</li>
+  <li><strong>Customization Guide</strong> — Making templates your own</li>
+  <li><strong>Deployment</strong> — Vercel, Netlify, and custom hosting</li>
+  <li><strong>Customization Walkthrough</strong> — Step-by-step branding guide</li>
+  <li><strong>Selling Templates</strong> — Pricing, delivery, payment, client workflow</li>
+  <li><strong>Forge-Pro Marketplace</strong> — Submitting templates for sale</li>
+  <li><strong>QA Gate</strong> — Quality requirements</li>
+  <li><strong>Supabase Configuration</strong> — Database, auth, and production setup</li>
+  <li><strong>Troubleshooting</strong> — Common issues and deployment fixes</li>
+  <li><strong>Vercel Integration</strong> — Live deployment, dashboards, and configuration</li>
+  <li><strong>Reference</strong> — Commands, configs, URLs</li>
+</ol>
+
+<!-- SECTION 1: INTRODUCTION -->
+<h1 class="page-break">1. Introduction</h1>
+
+<h2>What is Forge-Pro?</h2>
+<p>Forge-Pro is an <strong>AI-native, self-QA'd marketplace</strong> for premium website templates and UI components. It provides:</p>
+
+<ul>
+  <li><strong>10 production-ready templates</strong> — Each worth $2,000–$5,000 in design quality</li>
+  <li><strong>Automated QA gate</strong> — Validates responsive design, accessibility, SEO, and performance</li>
+  <li><strong>One-click deployment</strong> — Free hosting on Vercel or Netlify</li>
+  <li><strong>Vendor portal</strong> — Submit, manage, and sell your templates</li>
+  <li><strong>Desktop app</strong> — Windows installer for local preview</li>
+</ul>
+
+<h2>Who is this guide for?</h2>
+<table>
+  <tr><th>Audience</th><th>What you'll learn</th></tr>
+  <tr><td><strong>Template Buyers</strong></td><td>How to install, customize, and deploy templates</td></tr>
+  <tr><td><strong>Template Vendors</strong></td><td>How to submit and sell templates on the marketplace</td></tr>
+  <tr><td><strong>Developers</strong></td><td>How to contribute and extend the platform</td></tr>
+  <tr><td><strong>Agencies</strong></td><td>How to use templates for client projects</td></tr>
+</table>
+
+<h2>System Requirements</h2>
+<table>
+  <tr><th>Component</th><th>Requirement</th></tr>
+  <tr><td>Node.js</td><td>Version 22 or higher</td></tr>
+  <tr><td>Package Manager</td><td>npm, pnpm, or yarn</td></tr>
+  <tr><td>Browser</td><td>Chrome, Firefox, Safari, or Edge (latest)</td></tr>
+  <tr><td>OS</td><td>Windows, macOS, or Linux</td></tr>
+</table>
+
+<!-- SECTION 2: QUICK START -->
+<h1 class="page-break">2. Quick Start</h1>
+
+<h2>Option A: Desktop App (Easiest)</h2>
+<div class="step-box">
+  <p><span class="step-number">1</span> <strong>Download the installer</strong></p>
+  <p>Get <code>Forge Pro-Setup-0.1.0.exe</code> from the releases folder.</p>
+  
+  <p><span class="step-number">2</span> <strong>Run the installer</strong></p>
+  <p>Double-click the exe and follow the prompts. The app installs to your Program Files.</p>
+  
+  <p><span class="step-number">3</span> <strong>Launch the app</strong></p>
+  <p>Open "Forge Pro" from your Start Menu. The app runs in demo mode with sample data.</p>
+  
+  <p><span class="step-number">4</span> <strong>Open the user guide</strong></p>
+  <p>Go to <strong>File → Open user guide</strong> (or press F1) to open this PDF.</p>
+</div>
+
+<h2>Option B: Command Line (For Developers)</h2>
+<div class="step-box">
+  <p><span class="step-number">1</span> <strong>Clone the repository</strong></p>
+  <pre><code>git clone https://github.com/your-username/forge-pro.git
+cd forge-pro</code></pre>
+  
+  <p><span class="step-number">2</span> <strong>Install dependencies</strong></p>
+  <pre><code>pnpm install</code></pre>
+  
+  <p><span class="step-number">3</span> <strong>Start a template</strong></p>
+  <pre><code># Start any template in development mode
+cd templates/nimbus
+npm run dev
+
+# Open http://localhost:4321 in your browser</code></pre>
+  
+  <p><span class="step-number">4</span> <strong>Build for production</strong></p>
+  <pre><code>npm run build  # Creates optimized static files</code></pre>
+</div>
+
+<h2>Option C: One-Click Deploy</h2>
+<div class="step-box">
+  <p><span class="step-number">1</span> <strong>Install Vercel CLI</strong></p>
+  <pre><code>npm i -g vercel</code></pre>
+  
+  <p><span class="step-number">2</span> <strong>Login to Vercel</strong></p>
+  <pre><code>vercel login</code></pre>
+  
+  <p><span class="step-number">3</span> <strong>Deploy everything</strong></p>
+  <pre><code>./scripts/deploy-vercel.sh</code></pre>
+  
+  <div class="callout callout-success">
+    <p class="callout-title">✓ That's it!</p>
+    <p>All 11 projects (1 app + 10 templates) deploy to free Vercel hosting.</p>
+  </div>
+</div>
+
+<!-- SECTION 3: THE 10 TEMPLATES -->
+<h1 class="page-break">3. The 10 Templates</h1>
+
+<p>Each template is a complete, production-ready website built with modern frameworks. Choose the one that best fits your needs.</p>
+
+<div class="template-grid">
+  <div class="template-card">
+    <h4>🚀 Nimbus</h4>
+    <p><span class="template-tag">Astro</span> AI SaaS Landing Page</p>
+    <p>Glassmorphic nav, gradient hero, pricing table, testimonials, blog, newsletter signup.</p>
+  </div>
+  <div class="template-card">
+    <h4>📊 Atlas</h4>
+    <p><span class="template-tag">Next.js</span> SaaS Dashboard</p>
+    <p>Full dashboard with sidebar, charts, data tables, settings, billing, command palette.</p>
+  </div>
+  <div class="template-card">
+    <h4>💡 Lumen</h4>
+    <p><span class="template-tag">Astro</span> E-commerce Store</p>
+    <p>Product grid, detail pages, working cart (localStorage), filters, about page.</p>
+  </div>
+  <div class="template-card">
+    <h4>🎨 Studio</h4>
+    <p><span class="template-tag">SvelteKit</span> Creative Agency</p>
+    <p>Cinematic scroll, case studies, team grid, contact form, custom cursor.</p>
+  </div>
+  <div class="template-card">
+    <h4>🏪 Forge</h4>
+    <p><span class="template-tag">Next.js</span> Local Business</p>
+    <p>Services, booking widget, business hours, team, testimonials, contact.</p>
+  </div>
+  <div class="template-card">
+    <h4>📝 Pulse</h4>
+    <p><span class="template-tag">Astro</span> Blog / Newsletter</p>
+    <p>Markdown blog, reading progress, TOC, search, newsletter signup, dark mode.</p>
+  </div>
+  <div class="template-card">
+    <h4>📚 Sage</h4>
+    <p><span class="template-tag">Next.js</span> Course Platform</p>
+    <p>Course catalog, lesson player, progress tracking, pricing, instructor profiles.</p>
+  </div>
+  <div class="template-card">
+    <h4>🍽️ Mesa</h4>
+    <p><span class="template-tag">Astro</span> Restaurant</p>
+    <p>Fine dining aesthetic, menu with dietary tags, reservation widget, gallery.</p>
+  </div>
+  <div class="template-card">
+    <h4>💰 Ledger</h4>
+    <p><span class="template-tag">Next.js</span> Finance Dashboard</p>
+    <p>Net worth charts, transactions, budgets, goals, subscriptions, command palette.</p>
+  </div>
+  <div class="template-card">
+    <h4>📖 Quill</h4>
+    <p><span class="template-tag">Astro</span> Documentation</p>
+    <p>Sidebar navigation, TOC, code blocks, version switcher, full-text search.</p>
+  </div>
+</div>
+
+<h2>Choosing the Right Template</h2>
+<table>
+  <tr><th>If you need...</th><th>Use this template</th></tr>
+  <tr><td>SaaS product landing page</td><td><strong>Nimbus</strong></td></tr>
+  <tr><td>Admin dashboard / analytics</td><td><strong>Atlas</strong> or <strong>Ledger</strong></td></tr>
+  <tr><td>Online store / shop</td><td><strong>Lumen</strong></td></tr>
+  <tr><td>Agency / portfolio site</td><td><strong>Studio</strong></td></tr>
+  <tr><td>Local business / booking</td><td><strong>Forge</strong></td></tr>
+  <tr><td>Blog / content site</td><td><strong>Pulse</strong></td></tr>
+  <tr><td>Online courses / LMS</td><td><strong>Sage</strong></td></tr>
+  <tr><td>Restaurant / hospitality</td><td><strong>Mesa</strong></td></tr>
+  <tr><td>Financial app / dashboard</td><td><strong>Ledger</strong></td></tr>
+  <tr><td>Product documentation</td><td><strong>Quill</strong></td></tr>
+</table>
+
+<!-- SECTION 4: LOCAL DEVELOPMENT -->
+<h1 class="page-break">4. Local Development</h1>
+
+<h2>Starting a Template</h2>
+<p>Each template runs independently. Navigate to its folder and start the dev server:</p>
+
+<pre><code># Astro templates (Nimbus, Lumen, Pulse, Mesa, Quill)
+cd templates/nimbus
+npm install
+npm run dev
+# → http://localhost:4321
+
+# Next.js templates (Atlas, Forge, Sage, Ledger)
+cd templates/atlas
+npm install
+npm run dev
+# → http://localhost:3000
+
+# SvelteKit templates (Studio)
+cd templates/studio
+npm install
+npm run dev
+# → http://localhost:5173</code></pre>
+
+<h2>Available Commands</h2>
+<table>
+  <tr><th>Command</th><th>Astro</th><th>Next.js</th><th>SvelteKit</th></tr>
+  <tr><td><code>npm run dev</code></td><td>Start dev server</td><td>Start dev server</td><td>Start dev server</td></tr>
+  <tr><td><code>npm run build</code></td><td>Build to <code>dist/</code></td><td>Build to <code>.next/</code></td><td>Build to <code>dist/</code></td></tr>
+  <tr><td><code>npm run preview</code></td><td>Preview production build</td><td>Start production server</td><td>Preview production build</td></tr>
+</table>
+
+<h2>Project Structure</h2>
+
+<h3>Astro Template Structure</h3>
+<pre><code>templates/nimbus/
+├── src/
+│   ├── components/     # Reusable UI components
+│   ├── layouts/        # Page layouts
+│   ├── pages/          # Route pages
+│   ├── content/        # Markdown/MDX content
+│   └── styles/         # Global CSS
+├── public/             # Static assets
+├── package.json
+├── vercel.json         # Vercel config
+├── netlify.toml        # Netlify config
+└── README.md</code></pre>
+
+<h3>Next.js Template Structure</h3>
+<pre><code>templates/atlas/
+├── src/
+│   └── app/            # App Router pages
+│       ├── layout.tsx  # Root layout
+│       ├── page.tsx    # Home page
+│       └── globals.css # Global styles
+├── public/             # Static assets
+├── package.json
+├── vercel.json
+├── netlify.toml
+└── README.md</code></pre>
+
+<!-- SECTION 5: CUSTOMIZATION -->
+<h1 class="page-break">5. Customization Guide</h1>
+
+<h2>Brand Colors</h2>
+<p>Every template uses CSS custom properties for easy theming. Edit the <code>:root</code> section in the global CSS file:</p>
+
+<pre><code>/* templates/nimbus/src/styles/global.css */
+:root {
+  --accent: #e63946;        /* Primary brand color */
+  --accent-hover: #c1121f;  /* Hover state */
+  --bg: #faf9f7;            /* Background */
+  --text: #1a1a2e;          /* Text color */
+  --border: #e8e6e1;        /* Borders */
+}</code></pre>
+
+<div class="callout callout-info">
+  <p class="callout-title">💡 Pro Tip</p>
+  <p>Use <a href="https://coolors.co">coolors.co</a> to generate harmonious color palettes. Copy the hex values into the CSS variables.</p>
+</div>
+
+<h2>Typography</h2>
+<p>Fonts are loaded via Google Fonts in the layout file. To change fonts:</p>
+
+<pre><code>/* In Layout.astro or layout.tsx */
+<link href="https://fonts.googleapis.com/css2?family=YOUR+FONT:wght@400;600;700&display=swap" rel="stylesheet" />
+
+/* Then update CSS variables */
+:root {
+  --font-serif: 'Your Font', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}</code></pre>
+
+<h2>Content</h2>
+<p>Replace placeholder content with your own:</p>
+
+<table>
+  <tr><th>Template</th><th>Content Location</th><th>Format</th></tr>
+  <tr><td>Pulse</td><td><code>src/content/posts/</code></td><td>Markdown (.md)</td></tr>
+  <tr><td>Quill</td><td><code>src/content/docs/</code></td><td>Markdown (.md)</td></tr>
+  <tr><td>Sage</td><td><code>src/lib/data.ts</code></td><td>TypeScript</td></tr>
+  <tr><td>Ledger</td><td><code>src/lib/data.ts</code></td><td>TypeScript</td></tr>
+  <tr><td>All others</td><td>Inline in page files</td><td>JSX/Astro</td></tr>
+</table>
+
+<h2>Images</h2>
+<p>All templates use Unsplash for placeholder images. Replace with your own:</p>
+
+<pre><code>&lt;!-- Before --&gt;
+&lt;img src="https://images.unsplash.com/photo-..." alt="..." /&gt;
+
+&lt;!-- After --&gt;
+&lt;img src="/images/your-photo.jpg" alt="Descriptive alt text" /&gt;</code></pre>
+
+<div class="callout callout-warning">
+  <p class="callout-title">⚠️ Image Optimization</p>
+  <p>For production, convert images to WebP format and add proper <code>width</code> and <code>height</code> attributes to prevent layout shift.</p>
+</div>
+
+<h2>Adding Pages</h2>
+
+<h3>Astro</h3>
+<pre><code>/* Create src/pages/about.astro */
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+&lt;Layout title="About"&gt;
+  &lt;h1&gt;About Us&lt;/h1&gt;
+  &lt;p&gt;Your content here.&lt;/p&gt;
+&lt;/Layout&gt;</code></pre>
+
+<h3>Next.js</h3>
+<pre><code>/* Create src/app/about/page.tsx */
+export default function About() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;About Us&lt;/h1&gt;
+      &lt;p&gt;Your content here.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<h2>Forge-Pro Verify Tag</h2>
+<p>When submitting to the marketplace, add this tag to your <code>&lt;head&gt;</code>:</p>
+
+<pre><code>&lt;meta name="forge-pro:verify" content="YOUR_UNIQUE_TOKEN" /&gt;</code></pre>
+
+<p>Each template has a clearly marked placeholder for this tag in the layout file.</p>
+
+<!-- SECTION 6: DEPLOYMENT -->
+<h1 class="page-break">6. Deployment</h1>
+
+<h2>Option 1: Vercel (Recommended)</h2>
+
+<div class="step-box">
+  <p><span class="step-number">1</span> <strong>Install Vercel CLI</strong></p>
+  <pre><code>npm i -g vercel</code></pre>
+  
+  <p><span class="step-number">2</span> <strong>Login</strong></p>
+  <pre><code>vercel login</code></pre>
+  
+  <p><span class="step-number">3</span> <strong>Deploy a single template</strong></p>
+  <pre><code>cd templates/nimbus
+vercel --prod</code></pre>
+  
+  <p><span class="step-number">4</span> <strong>Or deploy all templates</strong></p>
+  <pre><code># Git Bash (Linux/Mac/WSL)
+./scripts/deploy-vercel.sh
+
+# PowerShell (Windows)
+.\scripts\deploy-vercel.ps1
+
+# PowerShell options
+.\scripts\deploy-vercel.ps1 -Templates   # Templates only
+.\scripts\deploy-vercel.ps1 -App         # Main app only
+.\scripts\deploy-vercel.ps1 -DryRun      # Preview without deploying</code></pre>
+</div>
+
+<div class="callout callout-success">
+  <p class="callout-title">✓ All Templates Are Live</p>
+  <p>All 10 templates have been deployed and verified. See the <strong>Vercel Integration</strong> section (Section 10) for live URLs and dashboard links.</p>
+</div>
+
+<h3>Vercel Free Tier Limits</h3>
+<table>
+  <tr><th>Resource</th><th>Limit</th><th>Your Usage</th></tr>
+  <tr><td>Projects</td><td>Unlimited</td><td>11</td></tr>
+  <tr><td>Bandwidth</td><td>100GB/month per project</td><td>~1GB</td></tr>
+  <tr><td>Build minutes</td><td>6,000/month</td><td>~100</td></tr>
+  <tr><td>Serverless functions</td><td>100 hours/month</td><td>Minimal</td></tr>
+  <tr><td>Cost</td><td>$0</td><td>$0</td></tr>
+</table>
+
+<h3>Windows-Specific Notes</h3>
+<div class="callout callout-warning">
+  <p class="callout-title">⚠️ PowerShell vs Git Bash</p>
+  <p>The <code>.sh</code> deploy script requires Git Bash or WSL on Windows. For native PowerShell, use <code>.\scripts\deploy-vercel.ps1</code> instead.</p>
+</div>
+
+<h2>Option 2: Netlify</h2>
+
+<div class="step-box">
+  <p><span class="step-number">1</span> <strong>Push to GitHub</strong></p>
+  <pre><code>git add .
+git commit -m "Initial commit"
+git push origin main</code></pre>
+  
+  <p><span class="step-number">2</span> <strong>Connect in Netlify</strong></p>
+  <p>Go to <a href="https://app.netlify.com">app.netlify.com</a> → "Add new site" → Import from Git.</p>
+  
+  <p><span class="step-number">3</span> <strong>Configure build settings</strong></p>
+  <table>
+    <tr><th>Setting</th><th>Astro</th><th>Next.js</th></tr>
+    <tr><td>Build command</td><td><code>npm run build</code></td><td><code>npm run build</code></td></tr>
+    <tr><td>Publish directory</td><td><code>dist</code></td><td><code>.next</code></td></tr>
+  </table>
+</div>
+
+<h2>Custom Domains</h2>
+<p>All deployments get free <code>*.vercel.app</code> or <code>*.netlify.app</code> subdomains. For custom domains:</p>
+
+<ol>
+  <li>Buy a domain (Namecheap, Cloudflare, etc.)</li>
+  <li>In Vercel/Netlify dashboard, go to Settings → Domains</li>
+  <li>Add your domain and configure DNS</li>
+</ol>
+
+<!-- SECTION 7: CUSTOMIZATION WALKTHROUGH -->
+<h1 class="page-break">7. Customization Walkthrough</h1>
+
+<p>Follow this step-by-step process to customize any template for a client.</p>
+
+<h2>Step 1: Start the Dev Server</h2>
+<pre><code>cd templates/nimbus
+npm install
+npm run dev
+# Open http://localhost:4321</code></pre>
+
+<h2>Step 2: Change Brand Colors</h2>
+<p>Edit the CSS variables in the global stylesheet:</p>
+<table>
+  <tr><th>Template</th><th>File Location</th></tr>
+  <tr><td>Astro (Nimbus, Lumen, Pulse, Mesa, Quill)</td><td><code>src/styles/global.css</code></td></tr>
+  <tr><td>Next.js (Atlas, Forge, Sage, Ledger)</td><td><code>src/app/globals.css</code></td></tr>
+  <tr><td>SvelteKit (Studio)</td><td><code>src/app.html</code> (inline styles)</td></tr>
+</table>
+
+<pre><code>:root {
+  --accent: #2563eb;       /* Primary brand color */
+  --accent-hover: #1d4ed8; /* Hover state */
+  --bg: #ffffff;           /* Background */
+  --text: #1e293b;         /* Text color */
+}</code></pre>
+
+<div class="callout callout-info">
+  <p class="callout-title">Tip: Generate Color Palettes</p>
+  <p>Use <a href="https://coolors.co">coolors.co</a> or <a href="https://realtimecolors.com">realtimecolors.com</a> to generate harmonious color palettes, then copy the hex values into the CSS variables.</p>
+</div>
+
+<h2>Step 3: Replace Images</h2>
+<ol>
+  <li>Put client images in <code>public/images/</code></li>
+  <li>Replace Unsplash URLs in the page files:</li>
+</ol>
+<pre><code>&lt;!-- Before --&gt;
+&lt;img src="https://images.unsplash.com/photo-..." /&gt;
+
+&lt;!-- After --&gt;
+&lt;img src="/images/client-photo.jpg" alt="Descriptive alt text" /&gt;</code></pre>
+
+<div class="callout callout-warning">
+  <p class="callout-title">Image Optimization</p>
+  <p>For production, convert images to WebP and add <code>width</code> + <code>height</code> attributes to prevent layout shift (CLS).</p>
+</div>
+
+<h2>Step 4: Update Content</h2>
+<table>
+  <tr><th>Template</th><th>Content Location</th><th>Format</th></tr>
+  <tr><td>Pulse</td><td><code>src/content/posts/*.md</code></td><td>Markdown</td></tr>
+  <tr><td>Quill</td><td><code>src/content/docs/*.md</code></td><td>Markdown</td></tr>
+  <tr><td>Sage</td><td><code>src/lib/data.ts</code></td><td>TypeScript</td></tr>
+  <tr><td>Ledger</td><td><code>src/lib/data.ts</code></td><td>TypeScript</td></tr>
+  <tr><td>All others</td><td>Inline in page files</td><td>JSX / Astro</td></tr>
+</table>
+
+<h2>Step 5: Add Client Logo</h2>
+<ol>
+  <li>Put the logo in <code>public/logo.svg</code> or <code>public/logo.png</code></li>
+  <li>Update the nav component to reference it</li>
+  <li>Recommended size: 200×50px for header, 40×40px for favicon</li>
+</ol>
+
+<h2>Step 6: Test Responsive</h2>
+<pre><code># Run the QA script to check all breakpoints
+node scripts/responsive-qa.mjs --template nimbus</code></pre>
+
+<h2>Step 7: Deploy</h2
+<pre><code>cd templates/nimbus
+vercel --prod</code></pre>
+
+<!-- SECTION 8: SELLING TEMPLATES -->
+<h1 class="page-break">8. Selling Templates</h1>
+
+<p>Forge-Pro templates are designed to be sold. Here is the complete workflow from picking a template to getting paid.</p>
+
+<h2>Choose the Right Template</h2>
+<table>
+  <tr><th>Buyer Needs</th><th>Sell Them</th><th>Suggested Price</th></tr>
+  <tr><td>SaaS startup landing page</td><td><strong>Nimbus</strong></td><td>$79 – $149</td></tr>
+  <tr><td>Admin dashboard / analytics</td><td><strong>Atlas</strong> or <strong>Ledger</strong></td><td>$149 – $299</td></tr>
+  <tr><td>Online store / shop</td><td><strong>Lumen</strong></td><td>$99 – $199</td></tr>
+  <tr><td>Agency / portfolio site</td><td><strong>Studio</strong></td><td>$79 – $149</td></tr>
+  <tr><td>Local business / booking</td><td><strong>Forge</strong></td><td>$49 – $99</td></tr>
+  <tr><td>Blog / content site</td><td><strong>Pulse</strong></td><td>$49 – $99</td></tr>
+  <tr><td>Online courses / LMS</td><td><strong>Sage</strong></td><td>$149 – $299</td></tr>
+  <tr><td>Restaurant / hospitality</td><td><strong>Mesa</strong></td><td>$79 – $149</td></tr>
+  <tr><td>Financial app / dashboard</td><td><strong>Ledger</strong></td><td>$149 – $299</td></tr>
+  <tr><td>Product documentation</td><td><strong>Quill</strong></td><td>$49 – $99</td></tr>
+</table>
+
+<h2>Customize for the Buyer</h2>
+<ol>
+  <li><strong>Change brand colors</strong> — Edit CSS variables (see Section 7)</li>
+  <li><strong>Replace company name</strong> — Search for the template name and replace with their company</li>
+  <li><strong>Swap images</strong> — Replace Unsplash URLs with their actual photos</li>
+  <li><strong>Update copy</strong> — Replace placeholder text with their real content</li>
+  <li><strong>Add their logo</strong> — Put it in <code>public/</code> and update the nav</li>
+  <li><strong>Test responsive</strong> — Run QA at all breakpoints</li>
+</ol>
+
+<h2>Deploy Their Site</h2
+<pre><code># Deploy to Vercel
+cd templates/nimbus
+vercel --prod
+# Gives you: https://nimbus-xyz.vercel.app</code></pre>
+
+<h3>Optional: Custom Domain</h3>
+<ol>
+  <li>Buy a domain (e.g., <code>theircompany.com</code>) — ~$10/year on Namecheap or Cloudflare</li>
+  <li>In Vercel Dashboard → Settings → Domains → add the domain</li>
+  <li>Point their DNS to Vercel (CNAME record)</li>
+  <li>SSL is automatic and free</li>
+</ol>
+
+<h2>Deliver to the Buyer</h2>
+
+<h3>Option A: Transfer the Vercel Project (Easiest)</h3>
+<ol>
+  <li>In Vercel Dashboard → their project → Settings → Transfer</li>
+  <li>Enter their Vercel email address</li>
+  <li>They accept — they now own the deployment</li>
+</ol>
+
+<h3>Option B: Give Them the Source Code</h3>
+<ol>
+  <li>Build the distributable ZIP:</li>
+</ol>
+<pre><code>.\scripts\build-zip.ps1</code></pre>
+<ol start="2">
+  <li>Send them <code>Forge-Pro-Distributable.zip</code></li>
+  <li>They extract, run <code>npm install && vercel --prod</code></li>
+</ol>
+
+<h3>Option C: Sell on the Forge-Pro Marketplace</h3>
+<ol>
+  <li>Open <a href="https://forge-pro-phi.vercel.app/vendor">forge-pro-phi.vercel.app/vendor</a></li>
+  <li>Click <strong>New Submission</strong></li>
+  <li>Fill in details, set price, upload zip</li>
+  <li>Submit — the QA gate validates automatically</li>
+  <li>Once approved, it is listed for buyers</li>
+</ol>
+
+<h2>Get Paid</h2>
+<table>
+  <tr><th>Method</th><th>How</th></tr>
+  <tr><td><strong>Direct Invoice</strong></td><td>PayPal, Stripe, bank transfer — you set the price</td></tr>
+  <tr><td><strong>Marketplace</strong></td><td>Forge-Pro handles payments (requires Stripe setup)</td></tr>
+  <tr><td><strong>Recurring</strong></td><td>Charge monthly for hosting + maintenance ($20 – $50/mo)</td></tr>
+</table>
+
+<h2>Real-World Example</h2>
+<div class="step-box">
+  <p><strong>Scenario:</strong> A restaurant owner needs a website.</p>
+  <ol>
+    <li><strong>Pick template:</strong> Mesa (restaurant/hospitality)</li>
+    <li><strong>Customize:</strong> Change name to "Maria's Italian Kitchen", swap photos, update menu, set hours</li>
+    <li><strong>Deploy:</strong> <code>vercel --prod</code> → <code>https://marias-italian.vercel.app</code></li>
+    <li><strong>Price:</strong> $149 one-time + $30/month hosting management</li>
+    <li><strong>Deliver:</strong> Transfer Vercel project to their account</li>
+  </ol>
+  <div class="callout callout-success">
+    <p class="callout-title">Revenue</p>
+    <p><strong>You earn:</strong> $149 upfront + $360/year recurring<br/>
+    <strong>They pay:</strong> $149 (vs $3,000+ from an agency)</p>
+  </div>
+</div>
+
+<h2>Pricing Guidelines</h2>
+<table>
+  <tr><th>Price Range</th><th>Recommended For</th></tr>
+  <tr><td>$0 – $49</td><td>Simple single-page sites, basic templates</td></tr>
+  <tr><td>$50 – $149</td><td>Multi-page sites, dashboards, e-commerce</td></tr>
+  <tr><td>$150 – $299</td><td>Complex apps, full-featured platforms</td></tr>
+  <tr><td>$300 – $500</td><td>Premium enterprise templates, extensive documentation</td></tr>
+</table>
+
+<!-- SECTION 9: MARKETPLACE -->
+<h1 class="page-break">9. Forge-Pro Marketplace</h1>
+
+<h2>Submitting a Template</h2>
+
+<div class="step-box">
+  <p><span class="step-number">1</span> <strong>Ensure QA compliance</strong></p>
+  <p>Your template must pass the automated QA gate (see Section 10).</p>
+  
+  <p><span class="step-number">2</span> <strong>Deploy to a public URL</strong></p>
+  <pre><code>cd your-template
+vercel --prod
+# Note your deployment URL</code></pre>
+  
+  <p><span class="step-number">3</span> <strong>Add the verify tag</strong></p>
+  <pre><code>&lt;meta name="forge-pro:verify" content="YOUR_TOKEN" /&gt;</code></pre>
+  
+  <p><span class="step-number">4</span> <strong>Submit via the vendor portal</strong></p>
+  <ol>
+    <li>Open the Forge-Pro app</li>
+    <li>Go to <strong>Vendor Portal → New Submission</strong></li>
+    <li>Fill in the 3-step form (Details → Preview → Upload)</li>
+    <li>Submit for QA review</li>
+  </ol>
+</div>
+
+<!-- SECTION 10: QA GATE -->
+<h1 class="page-break">10. QA Gate</h1>
+
+<p>The automated QA gate validates your template against these requirements:</p>
+
+<h2>Responsive Design</h2>
+<table>
+  <tr><th>Breakpoint</th><th>Width</th><th>Device</th></tr>
+  <tr><td>Mobile</td><td>320px</td><td>iPhone SE</td></tr>
+  <tr><td>Tablet</td><td>768px</td><td>iPad</td></tr>
+  <tr><td>Laptop</td><td>1280px</td><td>MacBook</td></tr>
+  <tr><td>Desktop</td><td>1920px</td><td>4K Monitor</td></tr>
+</table>
+
+<div class="callout callout-warning">
+  <p class="callout-title">⚠️ Zero Horizontal Overflow</p>
+  <p>Your site must NOT have horizontal scrolling at any breakpoint. Test with the QA script:</p>
+  <pre><code>node scripts/responsive-qa.mjs --template your-template</code></pre>
+</div>
+
+<h2>Lighthouse Scores</h2>
+<table>
+  <tr><th>Metric</th><th>Minimum</th></tr>
+  <tr><td>Performance</td><td>≥ 90</td></tr>
+  <tr><td>Accessibility</td><td>≥ 95</td></tr>
+  <tr><td>Best Practices</td><td>≥ 95</td></tr>
+  <tr><td>SEO</td><td>≥ 95</td></tr>
+</table>
+
+<h2>Technical Requirements</h2>
+<ul>
+  <li>✅ Zero console errors</li>
+  <li>✅ Zero broken internal links</li>
+  <li>✅ Working 404 page</li>
+  <li>✅ Dark/light theme toggle</li>
+  <li>✅ Semantic HTML with ARIA labels</li>
+  <li>✅ Keyboard navigation support</li>
+  <li>✅ <code>sitemap.xml</code></li>
+  <li>✅ <code>robots.txt</code> with Sitemap directive</li>
+  <li>✅ Open Graph meta tags</li>
+  <li>✅ JSON-LD structured data</li>
+  <li>✅ <code>&lt;meta name="forge-pro:verify"&gt;</code> tag</li>
+</ul>
+
+<!-- SECTION 11: SUPABASE CONFIGURATION -->
+<h1 class="page-break">11. Supabase Configuration</h1>
+
+<p>Forge-Pro uses <strong>Supabase</strong> for authentication, database, and real-time features. The platform runs in <strong>demo mode</strong> without Supabase, but production use requires a Supabase project.</p>
+
+<h2>When Do You Need Supabase?</h2>
+<table>
+  <tr><th>Feature</th><th>Without Supabase</th><th>With Supabase</th></tr>
+  <tr><td>Template marketplace</td><td>Demo data (in-memory)</td><td>Real vendor submissions</td></tr>
+  <tr><td>Vendor authentication</td><td>Auto-login as demo vendor</td><td>Email/password + OAuth</td></tr>
+  <tr><td>Admin panel</td><td>Demo data</td><td>Real vendor management</td></tr>
+  <tr><td>QA gate</td><td>Simulated results</td><td>Real automated QA</td></tr>
+  <tr><td>Template uploads</td><td>In-memory only</td><td>Persistent storage</td></tr>
+  <tr><td>Payments (Stripe)</td><td>Test mode</td><td>Real transactions</td></tr>
+</table>
+
+<div class="callout callout-info">
+  <p class="callout-title">Templates Do Not Need Supabase</p>
+  <p>All 10 templates are fully static and use mock/localStorage data. Supabase is only needed for the main Forge-Pro marketplace app (<code>apps/app</code>).</p>
+</div>
+
+<h2>Step 1: Create a Supabase Project</h2>
+<ol>
+  <li>Go to <a href="https://supabase.com">supabase.com</a> and sign up (free tier)</li>
+  <li>Click <strong>New Project</strong></li>
+  <li>Choose a name (e.g., <code>forge-pro</code>), set a strong database password</li>
+  <li>Select a region close to your users</li>
+  <li>Wait for the project to initialize (~30 seconds)</li>
+</ol>
+
+<h2>Step 2: Get Your Keys</h2>
+<p>In the Supabase Dashboard → <strong>Settings → API</strong>:</p>
+<table>
+  <tr><th>Key</th><th>Where to Find It</th><th>Purpose</th></tr>
+  <tr><td><code>SUPABASE_URL</code></td><td>Project URL</td><td>Database API endpoint</td></tr>
+  <tr><td><code>SUPABASE_ANON_KEY</code></td><td>Project API → anon/public</td><td>Server-side database access</td></tr>
+  <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td><td>Project API → service_role</td><td>Admin access (bypasses RLS)</td></tr>
+  <tr><td><code>NEXT_PUBLIC_SUPABASE_URL</code></td><td>Same as SUPABASE_URL</td><td>Client-side browser access</td></tr>
+  <tr><td><code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code></td><td>Same as SUPABASE_ANON_KEY</td><td>Client-side browser access</td></tr>
+</table>
+
+<div class="callout callout-warning">
+  <p class="callout-title">Two Sets of Keys</p>
+  <p>Forge-Pro uses <strong>both</strong> naming conventions. The <code>NEXT_PUBLIC_</code> prefixed vars are for client-side code (browser). The unprefixed vars are for server-side code (API routes, server components). Set <strong>all 5</strong> on Vercel.</p>
+</div>
+
+<div class="callout callout-warning">
+  <p class="callout-title">Keep Keys Secret</p>
+  <p>Never commit <code>SUPABASE_SERVICE_ROLE_KEY</code> to Git. It bypasses all security rules. Use Vercel environment variables instead.</p>
+</div>
+
+<h2>Step 3: Set Up the Database Schema</h2>
+<p>Forge-Pro includes migration files in <code>supabase/migrations/</code>. Run them <strong>in order</strong> (schema first, then RLS).</p>
+
+<div class="callout callout-warning">
+  <p class="callout-title">Important: Run Schema Before RLS</p>
+  <p>The RLS migration references tables created by the schema migration. If you run them out of order, you will get <code>relation "public.profiles" does not exist</code> errors.</p>
+</div>
+
+<p><strong>Method 1: Copy to clipboard and paste into Supabase SQL Editor</strong></p>
+<pre><code># Windows PowerShell — copies schema SQL to clipboard
+cd forge-pro\supabase\migrations\20260815000000_schema.sql | clip
+# Paste into Supabase SQL Editor → Click Run → Wait for "Success"
+
+# Windows PowerShell — copies RLS SQL to clipboard
+cd forge-pro\supabase\migrations\20260815000001_rls.sql | clip
+# Paste into Supabase SQL Editor → Click Run → Wait for "Success"</code></pre>
+
+<p><strong>Method 2: Use the Supabase CLI</strong></p>
+<pre><code># Install Supabase CLI
+npm i -g supabase
+
+# Link to your project
+supabase link --project-ref YOUR_PROJECT_REF
+
+# Run migrations
+supabase db push</code></pre>
+
+<h2>Step 4: Configure Row Level Security (RLS)</h2>
+<p>The RLS migration (Step 3, second file) adds security policies that ensure:</p>
+<ul>
+  <li>Vendors can only see/edit their own submissions</li>
+  <li>Admins can see all submissions and manage vendors</li>
+  <li>Public users can only read published templates</li>
+  <li>API endpoints validate authentication before mutations</li>
+</ul>
+
+<h2>Step 5: Set Environment Variables on Vercel</h2>
+<p>Add these in Vercel Dashboard → <strong>Settings → Environment Variables</strong>, or via PowerShell:</p>
+
+<pre><code># PowerShell commands to set all env vars
+cd "C:\AI\Freebuff Desktop\GitHub Projects\forge-pro"
+
+# Server-side vars (store as sensitive)
+vercel env add SUPABASE_URL production               # Paste: https://xxx.supabase.co
+vercel env add SUPABASE_ANON_KEY production            # Paste: your anon key
+vercel env add SUPABASE_SERVICE_ROLE_KEY production    # Paste: your service_role key
+
+# Client-side vars (store as non-sensitive)
+vercel env add NEXT_PUBLIC_SUPABASE_URL production     # Paste: same URL as above
+vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production # Paste: same anon key as above</code></pre>
+
+<table>
+  <tr><th>Variable</th><th>Store as Sensitive?</th><th>Purpose</th></tr>
+  <tr><td><code>SUPABASE_URL</code></td><td>No</td><td>Server-side DB access</td></tr>
+  <tr><td><code>SUPABASE_ANON_KEY</code></td><td>No</td><td>Server-side DB access</td></tr>
+  <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td><td><strong>Yes</strong></td><td>Admin access (never expose)</td></tr>
+  <tr><td><code>NEXT_PUBLIC_SUPABASE_URL</code></td><td>No</td><td>Client-side browser access</td></tr>
+  <tr><td><code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code></td><td>No</td><td>Client-side browser access</td></tr>
+</table>
+
+<h2>Step 6: Update turbo.json (Required)</h2>
+<p>Turbo needs to know about the env vars to pass them to the build. Open <code>turbo.json</code> and add the Supabase vars to <code>globalEnv</code>:</p>
+<pre><code>// turbo.json
+{
+  "globalEnv": [
+    "SUPABASE_URL",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+  ],
+  ...
+}</code></pre>
+
+<div class="callout callout-info">
+  <p class="callout-title">Why Both Naming Conventions?</p>
+  <p>The DB package (<code>@forge-pro/db</code>) reads <code>SUPABASE_URL</code> (no prefix). The Next.js app reads <code>NEXT_PUBLIC_SUPABASE_URL</code> for client components. Both must be set.</p>
+</div>
+
+<h2>Step 7: Enable OAuth (Optional)</h2>
+<p>To allow users to sign in with Google/GitHub:</p>
+<ol>
+  <li>In Supabase Dashboard → <strong>Authentication → Providers</strong></li>
+  <li>Enable Google or GitHub</li>
+  <li>Add your OAuth credentials from the provider's developer console</li>
+  <li>Set the callback URL to: <code>https://YOUR_PROJECT.supabase.co/auth/v1/callback</code></li>
+</ol>
+
+<h2>Step 8: Deploy</h2>
+<pre><code># Redeploy with new env vars
+cd forge-pro
+vercel --prod</code></pre>
+
+<div class="callout callout-success">
+  <p class="callout-title">That's It!</p>
+  <p>Once Supabase is configured, the vendor portal, admin panel, and QA gate all switch from demo mode to real production functionality.</p>
+</div>
+
+<div class="callout callout-info">
+  <p class="callout-title">Demo Mode Fallback</p>
+  <p>When Supabase is connected but no user is logged in, the app automatically falls back to demo mode. This lets you use the vendor portal immediately while you set up authentication later.</p>
+</div>
+
+<h2>Supabase Free Tier Limits</h2>
+<table>
+  <tr><th>Resource</th><th>Limit</th></tr>
+  <tr><td>Database</td><td>500MB</td></tr>
+  <tr><td>Storage</td><td>1GB</td></tr>
+  <tr><td>Auth users</td><td>50,000 monthly active</td></tr>
+  <tr><td>Edge functions</td><td>500K invocations/month</td></tr>
+  <tr><td>Realtime</td><td>200 concurrent connections</td></tr>
+  <tr><td>Cost</td><td>$0/month</td></tr>
+</table>
+
+<!-- SECTION 12: TROUBLESHOOTING -->
+<h1 class="page-break">12. Troubleshooting</h1>
+
+<h2>Common Issues</h2>
+
+<h3>"Module not found" error</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> Run <code>npm install</code> again. If that doesn't work, delete <code>node_modules</code> and reinstall.</p>
+  <pre><code>rm -rf node_modules
+npm install</code></pre>
+</div>
+
+<h3>Port already in use</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> Kill the process using the port, or specify a different port:</p>
+  <pre><code># Astro
+npm run dev -- --port 4400
+
+# Next.js
+npm run dev -- -p 3400</code></pre>
+</div>
+
+<h3>Build fails with TypeScript errors</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> Check the error message. Common fixes:</p>
+  <ul>
+    <li>Add missing type imports</li>
+    <li>Fix JSX props (use <code>camelCase</code> for SVG attributes: <code>stroke-width</code> → <code>strokeWidth</code>)</li>
+    <li>Ensure all dynamic routes have <code>generateStaticParams()</code></li>
+  </ul>
+</div>
+
+<h3>Theme toggle not working</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> Ensure the no-flash script is in the <code>&lt;head&gt;</code>:</p>
+  <pre><code>&lt;script&gt;
+  (function() {
+    var s = localStorage.getItem('theme');
+    if (s === 'dark' || (!s &amp;&amp; window.matchMedia('(prefers-color-scheme: dark)').matches))
+      document.documentElement.setAttribute('data-theme', 'dark');
+  })();
+&lt;/script&gt;</code></pre>
+</div>
+
+<h3>Vercel deployment fails</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> Check that <code>vercel.json</code> has the correct <code>outputDirectory</code>:</p>
+  <ul>
+    <li>Astro: <code>"outputDirectory": "dist"</code></li>
+    <li>Next.js: <code>"outputDirectory": ".next"</code></li>
+    <li>SvelteKit: remove <code>outputDirectory</code> (adapter-auto handles it)</li>
+  </ul>
+</div>
+
+<h3>"routes-manifest.json" not found (Next.js)</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> This happens when <code>outputDirectory</code> is set to <code>"out"</code> but Vercel needs <code>".next"</code>. Vercel's Next.js builder expects the standard <code>.next/</code> build output, not the static export <code>out/</code> directory.</p>
+  <pre><code>// vercel.json — correct for Next.js on Vercel
+{
+  "outputDirectory": ".next"
+}</code></pre>
+</div>
+
+<h3>"--name" option is deprecated</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> Remove <code>--name</code> from vercel commands. Vercel CLI 59+ infers the project name from the directory name automatically.</p>
+  <pre><code># Old (deprecated)
+vercel --yes --prod --name nimbus
+
+# New (correct)
+vercel --yes --prod</code></pre>
+</div>
+
+<h3>PowerShell: script won't run</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> PowerShell cannot run <code>.sh</code> scripts natively. Use one of:</p>
+  <ul>
+    <li><code>.\scripts\deploy-vercel.ps1</code> (PowerShell version)</li>
+    <li><code>bash .\scripts\deploy-vercel.sh</code> (if Git Bash is installed)</li>
+    <li>Open Git Bash and run from there</li>
+  </ul>
+</div>
+
+<h3>Build succeeds locally but fails on Vercel</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> Common causes:</p>
+  <ul>
+    <li><strong>Missing dependencies:</strong> Ensure <code>package.json</code> lists all needed packages (not just devDependencies)</li>
+    <li><strong>Node version:</strong> Vercel uses Node 20+ by default. Add <code>"engines": {"node": ">=22"}</code> to <code>package.json</code> if needed</li>
+    <li><strong>Monorepo issues:</strong> The root <code>vercel.json</code> uses <code>pnpm install --frozen-lockfile</code>. Ensure <code>pnpm-lock.yaml</code> is committed</li>
+    <li><strong>Missing <code>generateStaticParams</code>:</strong> Dynamic routes (e.g., <code>[id]</code>) need this function when using static export</li>
+  </ul>
+</div>
+
+<h3>SvelteKit deploy warning: "Could not detect a supported production environment"</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> This is a harmless warning from <code>@sveltejs/adapter-auto</code>. On Vercel, the adapter auto-detects the platform and works correctly. Ignore this warning — the build still succeeds.</p>
+</div>
+
+<h3>Template works locally but shows 404 on deployed URL</h3>
+<div class="callout callout-info">
+  <p><strong>Solution:</strong> Check that:</p>
+  <ul>
+    <li>The build completed successfully (check Vercel deployment logs)</li>
+    <li><code>outputDirectory</code> points to the correct build output</li>
+    <li>All internal links use relative paths (<code>/about</code> not <code>http://localhost:4321/about</code>)</li>
+    <li>Dynamic routes have <code>generateStaticParams()</code> for static export</li>
+  </ul>
+</div>
+
+<!-- SECTION 13: VERCEL INTEGRATION -->
+<h1 class="page-break">13. Vercel Integration</h1>
+
+<h2>Live Deployment URLs</h2>
+<p>All 10 templates are deployed and verified on Vercel's free tier. Your team account is <strong>everton-qa</strong>.</p>
+
+<table>
+  <tr><th>Template</th><th>Framework</th><th>Live URL</th><th>Dashboard</th></tr>
+  <tr><td><strong>Nimbus</strong></td><td>Astro</td><td><a href="https://nimbus-nu-lilac.vercel.app">nimbus-nu-lilac.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/nimbus">Dashboard</a></td></tr>
+  <tr><td><strong>Atlas</strong></td><td>Next.js</td><td><a href="https://atlas-eight-jet-21.vercel.app">atlas-eight-jet-21.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/atlas">Dashboard</a></td></tr>
+  <tr><td><strong>Lumen</strong></td><td>Astro</td><td><a href="https://lumen-nu-five.vercel.app">lumen-nu-five.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/lumen">Dashboard</a></td></tr>
+  <tr><td><strong>Studio</strong></td><td>SvelteKit</td><td><a href="https://studio-ten-blue-73.vercel.app">studio-ten-blue-73.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/studio">Dashboard</a></td></tr>
+  <tr><td><strong>Forge</strong></td><td>Next.js</td><td><a href="https://forge-theta-pearl.vercel.app">forge-theta-pearl.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/forge">Dashboard</a></td></tr>
+  <tr><td><strong>Pulse</strong></td><td>Astro</td><td><a href="https://pulse-five-sigma-43.vercel.app">pulse-five-sigma-43.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/pulse">Dashboard</a></td></tr>
+  <tr><td><strong>Sage</strong></td><td>Next.js</td><td><a href="https://sage-steel-theta.vercel.app">sage-steel-theta.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/sage">Dashboard</a></td></tr>
+  <tr><td><strong>Mesa</strong></td><td>Astro</td><td><a href="https://mesa-omega-eight.vercel.app">mesa-omega-eight.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/mesa">Dashboard</a></td></tr>
+  <tr><td><strong>Ledger</strong></td><td>Next.js</td><td><a href="https://ledger-taupe-beta.vercel.app">ledger-taupe-beta.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/ledger">Dashboard</a></td></tr>
+  <tr><td><strong>Quill</strong></td><td>Astro</td><td><a href="https://quill-eight-lyart.vercel.app">quill-eight-lyart.vercel.app</a></td><td><a href="https://vercel.com/everton-qa/quill">Dashboard</a></td></tr>
+</table>
+
+<h2>Vercel Configuration per Framework</h2>
+<table>
+  <tr><th>Framework</th><th><code>outputDirectory</code></th><th><code>framework</code></th><th>Notes</th></tr>
+  <tr><td>Astro</td><td><code>dist</code></td><td><code>astro</code></td><td>Static output, no server needed</td></tr>
+  <tr><td>Next.js</td><td><code>.next</code></td><td><code>nextjs</code></td><td>Vercel handles SSG/ISR natively</td></tr>
+  <tr><td>SvelteKit</td><td><em>auto</em></td><td><code>sveltekit</code></td><td>Uses <code>@sveltejs/adapter-auto</code></td></tr>
+</table>
+
+<div class="callout callout-warning">
+  <p class="callout-title">⚠️ Next.js: Do Not Use <code>output: 'export'</code> on Vercel</p>
+  <p>Setting <code>output: 'export'</code> in <code>next.config.ts</code> generates static files in <code>out/</code>, but Vercel's builder expects <code>routes-manifest.json</code> from <code>.next/</code>. For Vercel deployment, keep <code>outputDirectory: ".next"</code> and let Vercel handle server-side rendering.</p>
+</div>
+
+<h2>Environment Variables</h2>
+<p>Add these in the Vercel Dashboard under <strong>Settings → Environment Variables</strong>:</p>
+<table>
+  <tr><th>Variable</th><th>Required For</th><th>Description</th></tr>
+  <tr><td><code>SUPABASE_URL</code></td><td>Main App</td><td>Supabase project URL</td></tr>
+  <tr><td><code>SUPABASE_ANON_KEY</code></td><td>Main App</td><td>Supabase anonymous/public key</td></tr>
+  <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td><td>Main App, QA Runner</td><td>Supabase service role key (server-side only)</td></tr>
+  <tr><td><code>SANITY_PROJECT_ID</code></td><td>Main App</td><td>Sanity project ID</td></tr>
+  <tr><td><code>SANITY_API_TOKEN</code></td><td>Main App</td><td>Sanity API token</td></tr>
+  <tr><td><code>STRIPE_SECRET_KEY</code></td><td>Main App</td><td>Stripe secret key</td></tr>
+  <tr><td><code>QA_INTERNAL_SECRET</code></td><td>Main App</td><td>Shared secret for QA runner callbacks</td></tr>
+</table>
+
+<div class="callout callout-info">
+  <p class="callout-title">💡 Templates Need No Environment Variables</p>
+  <p>All 10 templates are fully static and use mock/localStorage data. They require zero environment variables to run.</p>
+</div>
+
+<h2>Redeploying</h2>
+<pre><code># Redeploy a single template
+cd templates/nimbus
+vercel --prod
+
+# Redeploy all templates
+.\scripts\deploy-vercel.ps1 -Templates
+
+# Redeploy from Git (auto-deploy on push)
+# Connect your repo in Vercel Dashboard → Settings → Git</code></pre>
+
+<h2>Custom Domains</h2>
+<p>To use your own domain instead of <code>*.vercel.app</code>:</p>
+<ol>
+  <li>Buy a domain (Namecheap, Cloudflare, etc. ~$10/year)</li>
+  <li>In Vercel Dashboard → your project → <strong>Settings → Domains</strong></li>
+  <li>Add your domain (e.g., <code>nimbus.yourdomain.com</code>)</li>
+  <li>Configure DNS as instructed by Vercel (CNAME or A record)</li>
+  <li>SSL is automatic and free</li>
+</ol>
+
+<h2>Team Access</h2>
+<p>All projects are under the <strong>everton-qa</strong> team. To add team members:</p>
+<ol>
+  <li>Vercel Dashboard → <strong>Settings → Members</strong></li>
+  <li>Invite by email</li>
+  <li>Free tier supports unlimited team members for personal accounts</li>
+</ol>
+
+<!-- SECTION 14: REFERENCE -->
+<h1 class="page-break">14. Reference</h1>
+
+<h2>Quick Commands</h2>
+<table>
+  <tr><th>Command</th><th>Description</th></tr>
+  <tr><td><code>npm run dev</code></td><td>Start development server</td></tr>
+  <tr><td><code>npm run build</code></td><td>Build for production</td></tr>
+  <tr><td><code>npm run preview</code></td><td>Preview production build</td></tr>
+  <tr><td><code>.\scripts\deploy-vercel.ps1</code></td><td>Deploy all to Vercel (PowerShell)</td></tr>
+  <tr><td><code>./scripts/deploy-vercel.sh</code></td><td>Deploy all to Vercel (Bash)</td></tr>
+  <tr><td><code>node scripts/responsive-qa.mjs</code></td><td>Run responsive QA checks</td></tr>
+  <tr><td><code>node scripts/qa-check.mjs</code></td><td>Run console + accessibility checks</td></tr>
+  <tr><td><code>node scripts/gen-slide-deck.mjs</code></td><td>Generate marketing presentation</td></tr>
+  <tr><td><code>node scripts/html-to-pdf.mjs</code></td><td>Regenerate user guide PDF</td></tr>
+</table>
+
+<h2>Live Template URLs</h2>
+<table>
+  <tr><th>Template</th><th>URL</th></tr>
+  <tr><td>Nimbus</td><td><a href="https://nimbus-nu-lilac.vercel.app">nimbus-nu-lilac.vercel.app</a></td></tr>
+  <tr><td>Atlas</td><td><a href="https://atlas-eight-jet-21.vercel.app">atlas-eight-jet-21.vercel.app</a></td></tr>
+  <tr><td>Lumen</td><td><a href="https://lumen-nu-five.vercel.app">lumen-nu-five.vercel.app</a></td></tr>
+  <tr><td>Studio</td><td><a href="https://studio-ten-blue-73.vercel.app">studio-ten-blue-73.vercel.app</a></td></tr>
+  <tr><td>Forge</td><td><a href="https://forge-theta-pearl.vercel.app">forge-theta-pearl.vercel.app</a></td></tr>
+  <tr><td>Pulse</td><td><a href="https://pulse-five-sigma-43.vercel.app">pulse-five-sigma-43.vercel.app</a></td></tr>
+  <tr><td>Sage</td><td><a href="https://sage-steel-theta.vercel.app">sage-steel-theta.vercel.app</a></td></tr>
+  <tr><td>Mesa</td><td><a href="https://mesa-omega-eight.vercel.app">mesa-omega-eight.vercel.app</a></td></tr>
+  <tr><td>Ledger</td><td><a href="https://ledger-taupe-beta.vercel.app">ledger-taupe-beta.vercel.app</a></td></tr>
+  <tr><td>Quill</td><td><a href="https://quill-eight-lyart.vercel.app">quill-eight-lyart.vercel.app</a></td></tr>
+</table>
+
+<h2>File Locations</h2>
+<table>
+  <tr><th>File</th><th>Purpose</th></tr>
+  <tr><td><code>.env.example</code></td><td>Environment variables template</td></tr>
+  <tr><td><code>DEPLOY.md</code></td><td>Deployment guide</td></tr>
+  <tr><td><code>CONTRIBUTING.md</code></td><td>Contribution guidelines</td></tr>
+  <tr><td><code>scripts/deploy-vercel.sh</code></td><td>Vercel deploy (Git Bash)</td></tr>
+  <tr><td><code>scripts/deploy-vercel.ps1</code></td><td>Vercel deploy (PowerShell)</td></tr>
+  <tr><td><code>scripts/responsive-qa.mjs</code></td><td>Responsive screenshot QA</td></tr>
+  <tr><td><code>scripts/qa-check.mjs</code></td><td>Console + accessibility QA</td></tr>
+  <tr><td><code>scripts/build-distributable.mjs</code></td><td>Build ZIP distribution</td></tr>
+  <tr><td><code>scripts/build-zip.ps1</code></td><td>Build ZIP (PowerShell)</td></tr>
+  <tr><td><code>scripts/gen-slide-deck.mjs</code></td><td>Generate marketing presentation</td></tr>
+  <tr><td><code>scripts/html-to-pdf.mjs</code></td><td>Convert guide HTML to PDF</td></tr>
+  <tr><td><code>vercel.json</code></td><td>Root Vercel config (main app)</td></tr>
+  <tr><td><code>Forge-Pro-Distributable.zip</code></td><td>Full distributable package</td></tr>
+</table>
+
+<h2>Keyboard Shortcuts</h2>
+<table>
+  <tr><th>Shortcut</th><th>Action</th><th>Available In</th></tr>
+  <tr><td><code>⌘/Ctrl + K</code></td><td>Open command palette</td><td>Atlas, Ledger</td></tr>
+  <tr><td><code>Escape</code></td><td>Close modals/overlays</td><td>All templates</td></tr>
+  <tr><td><code>1-6</code></td><td>Quick page navigation</td><td>Ledger</td></tr>
+  <tr><td><code>F1</code></td><td>Open user guide</td><td>Desktop app</td></tr>
+</table>
+
+<!-- FOOTER -->
+<div class="footer page-break">
+  <p><strong>Forge-Pro</strong> — Premium Website Templates Marketplace</p>
+  <p>Version 1.0 • August 2026</p>
+  <p style="margin-top: 0.5rem;">Built with ❤️ for developers, designers, and creators.</p>
+</div>
+
+</body>
+</html>

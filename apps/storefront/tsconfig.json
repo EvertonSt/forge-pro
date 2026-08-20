@@ -1,0 +1,5 @@
+{
+  "extends": "@forge-pro/config/tsconfig/astro.json",
+  "include": ["src", ".astro"],
+  "exclude": ["node_modules", "dist"]
+}

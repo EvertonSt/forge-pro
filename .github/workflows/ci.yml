@@ -1,0 +1,175 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typecheck · lint · build · unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # id-token: write lets the OIDC step exchange a short-lived Vercel Remote
+    # Cache token, so turbo cache hits are shared across jobs, PRs, and
+    # contributors (not just within one run).
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Vercel Remote Cache — only when the TURBO_TEAM repository variable is
+      # set (see README → Remote turbo cache for the one-time Vercel setup).
+      # Without it, turbo just runs on the per-run local cache.
+      - uses: vercel/setup-turborepo-remote-cache-action@v1.0.0
+        if: ${{ vars.TURBO_TEAM != '' }}
+        with:
+          team: ${{ vars.TURBO_TEAM }}
+
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm build
+      - run: pnpm test
+
+  e2e:
+    name: Portal e2e (next start + Playwright)
+    runs-on: ubuntu-latest
+    needs: checks
+    timeout-minutes: 20
+    # id-token: write for the Vercel Remote Cache OIDC exchange (shared turbo
+    # cache across jobs).
+    permissions:
+      contents: read
+      id-token: write
+    # The whole job runs inside the pinned e2e image (Dockerfile.e2e): it
+    # ships the matching Chromium + a deterministic font set, so the visual
+    # goldens (e2e/visual.spec.ts) reproduce anywhere the image runs. Goldens
+    # are generated in this same image via the visual-update workflow — never
+    # on a host OS. The image runs as root; the Chromium sandbox is disabled
+    # accordingly (Playwright handles this automatically).
+    container:
+      image: ghcr.io/${{ github.repository_owner }}/forge-pro-e2e:v1.62
+      options: --ipc=host --init
+      # The host's runner temp dir is bind-mounted into the container at
+      # /cache. The actions/cache steps restore/save there, and the
+      # in-container install reads/writes the same files — so the pnpm store
+      # persists across CI runs. (The turbo cache is REMOTE now — Vercel
+      # Remote Cache via the OIDC step below — so there's no local turbo
+      # mount.)
+      volumes:
+        - ${{ runner.temp }}/forge-pro-e2e-cache:/cache
+      env:
+        PNPM_STORE_DIR: /cache/pnpm-store
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Vercel Remote Cache — only when TURBO_TEAM is configured; otherwise
+      # turbo runs on the per-run local cache only.
+      - uses: vercel/setup-turborepo-remote-cache-action@v1.0.0
+        if: ${{ vars.TURBO_TEAM != '' }}
+        with:
+          team: ${{ vars.TURBO_TEAM }}
+
+      - name: Restore pnpm store
+        id: restore-pnpm
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/forge-pro-e2e-cache/pnpm-store
+          key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+
+      # Prefer the offline store — installs mostly resolve from the cache
+      # instead of the network.
+      - run: pnpm install --frozen-lockfile --prefer-offline
+
+      # The app's `next start` needs the built workspace packages + .next.
+      # Turbo restores unchanged tasks from the Vercel Remote Cache (shared
+      # with the checks job and every contributor). The log is kept for the
+      # cache-effectiveness summary below (pipefail keeps a failed build
+      # failing the step).
+      - name: Build (turbo)
+        run: |
+          set -o pipefail
+          pnpm turbo run build --filter=@forge-pro/app... 2>&1 | tee /tmp/turbo-build.log
+
+      - name: Cache effectiveness summary
+        if: always()
+        env:
+          PNPM_HIT: ${{ steps.restore-pnpm.outputs.cache-hit }}
+          PNPM_MATCHED: ${{ steps.restore-pnpm.outputs.cache-matched-key }}
+          PNPM_PRIMARY: ${{ steps.restore-pnpm.outputs.cache-primary-key }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+        run: |
+          outcome() {
+            if [ "$1" = "true" ]; then echo "exact hit";
+            elif [ -n "$2" ]; then echo "restore-key fallback";
+            else echo "miss"; fi
+          }
+          key() {
+            local k="${2:-$1}"  # matched key, else the primary we looked up
+            if [ ${#k} -le 48 ]; then printf '%s' "$k"; else printf '%s…' "${k:0:45}"; fi
+          }
+          pnpm_out=$(outcome "$PNPM_HIT" "$PNPM_MATCHED")
+          pnpm_key=$(key "$PNPM_PRIMARY" "$PNPM_MATCHED")
+          if [ -n "$TURBO_TEAM" ]; then turbo_out="remote (OIDC)"; else turbo_out="not configured"; fi
+          {
+            echo "### e2e cache breakdown"
+            echo ""
+            echo "| Cache | Outcome | Key |"
+            echo "|---|---|---|"
+            echo "| pnpm store | $pnpm_out | \`$pnpm_key\` |"
+            echo "| turbo (Vercel Remote Cache) | $turbo_out | TURBO_TEAM=$([ -n "$TURBO_TEAM" ] && echo set || echo unset) |"
+            echo ""
+            if [ -f /tmp/turbo-build.log ]; then
+              turbo_line=$(grep -oE 'Cached: [0-9]+ cached, [0-9]+ total' /tmp/turbo-build.log | tail -1)
+              remote_line=$(grep -oE 'Remote caching enabled' /tmp/turbo-build.log | tail -1)
+              echo "**Turbo build:** ${turbo_line:-cache line not found} — tasks restored from cache vs rebuilt. ${remote_line:+Remote caching enabled.}"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Playwright's webServer boots `next start` itself; ALLOW_DEMO_MODE and
+      # the isolated DEMO_STORE_DIR come from apps/app/playwright.config.ts.
+      # The browser is already in the image — no install step. The json
+      # reporter writes per-test durations to a file (env var) while `list`
+      # keeps the live log readable; the timing step below summarizes them.
+      - name: Run e2e
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: /tmp/pw-results.json
+        run: pnpm --filter @forge-pro/app exec playwright test --reporter=json,list
+
+      # Where the e2e time actually goes — per-spec wall-clock in the job
+      # summary (a slow spec is a cost signal, and it shows up in every run).
+      # Runs even on failure so a red run still shows which spec blew up.
+      - name: E2E timing breakdown
+        if: always()
+        run: node apps/app/scripts/e2e-timing.mjs /tmp/pw-results.json
+
+      # Persist the pnpm store back into the mounted cache (the turbo cache
+      # is remote — nothing to save).
+      - name: Save pnpm store
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: ${{ runner.temp }}/forge-pro-e2e-cache/pnpm-store
+          key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            apps/app/playwright-report/
+            apps/app/test-results/
+          retention-days: 7

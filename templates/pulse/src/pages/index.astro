@@ -1,0 +1,274 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const featured = sortedPosts.find(p => p.data.featured) || sortedPosts[0];
+const recent = sortedPosts.slice(0, 6);
+const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags))];
+---
+
+<Layout title="Home">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">Independent Publishing</div>
+        <h1>Stories that<br /><em>actually matter</em></h1>
+        <p>A space for thoughtful writing on technology, creativity, and the craft of building things that last. No hot takes. No engagement bait. Just good words.</p>
+        <div class="hero-cta">
+          <a href="/blog" class="btn btn-primary">Read the Blog</a>
+          <a href="#newsletter" class="btn btn-outline">Subscribe</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <strong>120+</strong>
+            <span>Articles</span>
+          </div>
+          <div class="stat">
+            <strong>8K</strong>
+            <span>Subscribers</span>
+          </div>
+          <div class="stat">
+            <strong>Weekly</strong>
+            <span>Newsletter</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Post -->
+  {featured && (
+    <section class="featured-section">
+      <div class="container">
+        <h2 class="section-label">Featured</h2>
+        <a href={`/blog/${featured.slug}`} class="featured-card card">
+          <div class="featured-image">
+            <img src={featured.data.image} alt="" loading="lazy" width="800" height="400" />
+          </div>
+          <div class="featured-meta">
+            <div class="tags">
+              {featured.data.tags.map(tag => <span class="tag">{tag}</span>)}
+            </div>
+            <h3>{featured.data.title}</h3>
+            <p>{featured.data.description}</p>
+            <div class="post-author">
+              <strong>{featured.data.author}</strong>
+              <span>· {new Date(featured.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- Recent Posts -->
+  <section class="recent-section" data-animate>
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-label">Recent Writing</h2>
+        <a href="/blog" class="btn btn-outline">View All</a>
+      </div>
+      <div class="post-grid">
+        {recent.map(post => (
+          <a href={`/blog/${post.slug}`} class="post-card card">
+            <div class="post-card-image">
+              <img src={post.data.image} alt="" loading="lazy" width="400" height="240" />
+            </div>
+            <div class="post-card-content">
+              <div class="tags">
+                {post.data.tags.slice(0, 2).map(tag => <span class="tag">{tag}</span>)}
+              </div>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+              <div class="post-meta">
+                <span>{post.data.author}</span>
+                <span>· {new Date(post.data.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Topics -->
+  <section class="topics-section" data-animate>
+    <div class="container">
+      <h2 class="section-label">Browse by Topic</h2>
+      <div class="topic-chips">
+        {allTags.map(tag => (
+          <a href={`/blog/topic/${tag}`} class="topic-chip">{tag}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section id="newsletter" class="newsletter-section">
+    <div class="container newsletter-inner">
+      <div class="newsletter-content">
+        <h2>Get the weekly digest</h2>
+        <p>One email per week. The best writing on technology, creativity, and building things. No spam, unsubscribe anytime.</p>
+        <form class="newsletter-form" id="newsletter-form">
+          <input type="email" placeholder="you@example.com" required aria-label="Email address" />
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+        <div class="newsletter-success" hidden>
+          <strong>✓ You're in!</strong> Check your inbox for a confirmation.
+        </div>
+        <p class="newsletter-note">Join 8,000+ creators. Unsubscribe anytime.</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    padding: var(--space-2xl) 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); align-items: center; }
+  .hero-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-md);
+  }
+  .hero h1 { margin-bottom: var(--space-md); }
+  .hero h1 em { color: var(--accent); font-style: normal; }
+  .hero p { color: var(--text-secondary); font-size: 1.1rem; max-width: 48ch; margin-bottom: var(--space-lg); }
+  .hero-cta { display: flex; gap: var(--space-sm); flex-wrap: wrap; margin-bottom: var(--space-xl); }
+  .hero-stats { display: flex; gap: var(--space-xl); }
+  .hero-stats .stat { display: flex; flex-direction: column; }
+  .hero-stats strong { font-size: 1.5rem; font-family: var(--font-serif); }
+  .hero-stats span { font-size: 0.85rem; color: var(--text-secondary); }
+  .hero-visual { position: relative; height: 300px; }
+  .gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.6;
+    animation: float 8s ease-in-out infinite;
+  }
+  .orb-1 { width: 200px; height: 200px; background: var(--accent); top: 0; left: 20%; animation-delay: 0s; }
+  .orb-2 { width: 150px; height: 150px; background: #6366f1; top: 40%; left: 50%; animation-delay: -3s; }
+  .orb-3 { width: 120px; height: 120px; background: #f59e0b; top: 20%; left: 70%; animation-delay: -5s; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gradient-orb { animation: none; }
+  }
+
+  .section-label {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: var(--space-lg);
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+  }
+  .section-header .section-label { margin-bottom: 0; }
+
+  .featured-section { padding-block: var(--space-2xl); }
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    text-decoration: none;
+    color: inherit;
+  }
+  .featured-card:hover { text-decoration: none; transform: translateY(-4px); }
+  .featured-image { border-radius: var(--radius); overflow: hidden; }
+  .featured-image img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 16/9; }
+  .featured-meta { display: flex; flex-direction: column; justify-content: center; }
+  .featured-meta h3 { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); margin: var(--space-md) 0 var(--space-sm); }
+  .featured-meta p { color: var(--text-secondary); margin-bottom: var(--space-md); }
+  .tags { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+  .post-author { color: var(--text-secondary); font-size: 0.9rem; }
+  .post-author strong { color: var(--text); }
+
+  .recent-section { padding-block: var(--space-xl); }
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+  }
+  .post-card:hover { text-decoration: none; }
+  .post-card-image { border-radius: var(--radius); overflow: hidden; aspect-ratio: 16/10; }
+  .post-card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .post-card-content { padding-top: var(--space-md); }
+  .post-card-content h3 { font-size: 1.15rem; margin: var(--space-sm) 0; line-height: 1.3; }
+  .post-card-content p { color: var(--text-secondary); font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .post-meta { color: var(--text-secondary); font-size: 0.8rem; margin-top: var(--space-sm); display: flex; gap: var(--space-xs); }
+
+  .topics-section { padding-block: var(--space-xl); }
+  .topic-chips { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+  .topic-chip {
+    padding: 0.5rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    color: var(--text);
+    font-weight: 500;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .topic-chip:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+  .newsletter-section {
+    padding-block: var(--space-2xl);
+    background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+    border-radius: var(--radius);
+    margin-block: var(--space-xl);
+  }
+  .newsletter-inner { text-align: center; max-width: 600px; margin-inline: auto; }
+  .newsletter-content h2 { margin-bottom: var(--space-sm); }
+  .newsletter-content > p { color: var(--text-secondary); margin-bottom: var(--space-lg); }
+  .newsletter-form { justify-content: center; }
+  .newsletter-success { margin-top: var(--space-md); color: #16a34a; font-weight: 600; }
+  .newsletter-note { color: var(--text-secondary); font-size: 0.8rem; margin-top: var(--space-sm); }
+
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    .hero-stats { gap: var(--space-lg); }
+    .featured-card { grid-template-columns: 1fr; }
+    .post-grid { grid-template-columns: 1fr; }
+    .newsletter-form { flex-direction: column; }
+  }
+</style>
+
+<script>
+  document.getElementById('newsletter-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const success = document.querySelector('.newsletter-success') as HTMLElement;
+    form.hidden = true;
+    success.hidden = false;
+    window.showToast?.('Welcome! Check your inbox for a confirmation.', 'success', 4000);
+  });
+</script>

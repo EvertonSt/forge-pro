@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://quill-template.netlify.app/sitemap.xml

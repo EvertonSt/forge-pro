@@ -1,0 +1,121 @@
+---
+import '../layouts/global.css';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quill — Documentation for Modern Products</title>
+    <meta name="description" content="Beautiful, developer-friendly documentation. Built for speed, designed for clarity." />
+    <!-- Forge Pro verify tag — INSERT YOUR TOKEN BELOW -->
+    <!-- <meta name="forge-pro:verify" content="YOUR_TOKEN_HERE" /> -->
+    <script is:inline>
+      (function() {
+        var s = localStorage.getItem('theme');
+        if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches))
+          document.documentElement.setAttribute('data-theme', 'dark');
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Hero -->
+    <section style="min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: var(--space-2xl) clamp(1rem, 5vw, 4rem); position: relative; overflow: hidden;">
+      <div style="position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%); pointer-events: none;"></div>
+
+      <div style="position: relative; z-index: 1; max-width: 700px;">
+        <div style="display: inline-flex; align-items: center; gap: var(--space-sm); padding: 0.3rem 0.75rem; background: color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 2rem; font-size: 0.8rem; color: var(--accent); font-weight: 500; margin-bottom: var(--space-lg);">
+          <span>✨</span> v2.4 — Now with batch operations
+        </div>
+
+        <h1 style="font-size: clamp(2.5rem, 2rem + 3vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: var(--space-lg); letter-spacing: -0.02em;">
+          Documentation that<br /><span style="color: var(--accent);">developers love</span>
+        </h1>
+
+        <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 50ch; margin: 0 auto var(--space-xl); line-height: 1.6;">
+          Beautiful, fast, and developer-friendly. Build docs that your users actually want to read. Powered by MDX, full-text search, and dark mode out of the box.
+        </p>
+
+        <div style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
+          <a href="/docs/getting-started" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-size: 1rem;">Get Started →</a>
+          <a href="/docs/api-reference" class="btn btn-outline" style="padding: 0.75rem 1.5rem; font-size: 1rem;">API Reference</a>
+        </div>
+
+        <!-- Code Preview -->
+        <div style="margin-top: var(--space-2xl); background: var(--code-bg); border-radius: var(--radius); padding: var(--space-lg); text-align: left; max-width: 550px; margin-inline: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.15);">
+          <div style="display: flex; gap: 6px; margin-bottom: var(--space-md);">
+            <div style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444;"></div>
+            <div style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></div>
+            <div style="width: 10px; height: 10px; border-radius: 50%; background: #22c55e;"></div>
+          </div>
+          <pre style="margin: 0; background: transparent; color: #e2e8f0; font-size: 0.85rem;"><code><span style="color: #a78bfa;">import</span> {'{'} <span style="color: #67e8f9;">Quill</span> {'}'} <span style="color: #a78bfa;">from</span> <span style="color: #86efac;">'quill-sdk'</span>;
+
+<span style="color: #a78bfa;">const</span> <span style="color: #67e8f9;">app</span> = <span style="color: #a78bfa;">new</span> <span style="color: #fbbf24;">Quill</span>({'{'}
+  <span style="color: #93c5fd;">apiKey</span>: <span style="color: #86efac;">'your-key'</span>,
+  <span style="color: #93c5fd;">environment</span>: <span style="color: #86efac;">'production'</span>,
+{'}'});
+
+<span style="color: #a78bfa;">const</span> <span style="color: #67e8f9;">status</span> = <span style="color: #a78bfa;">await</span> app.<span style="color: #fbbf24;">ping</span>();
+console.<span style="color: #fbbf24;">log</span>(status.ok); <span style="color: #6b7280;">// true</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section data-animate style="padding: var(--space-2xl) clamp(1rem, 5vw, 4rem); max-width: 1000px; margin-inline: auto;">
+      <div style="text-align: center; margin-bottom: var(--space-2xl);">
+        <h2 style="font-size: 2rem; margin-bottom: var(--space-sm);">Built for developers</h2>
+        <p style="color: var(--text-secondary); max-width: 50ch; margin: 0 auto;">Everything you need to create world-class documentation.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--space-lg);">
+        <div style="padding: var(--space-lg); border: 1px solid var(--border); border-radius: var(--radius);">
+          <div style="font-size: 1.5rem; margin-bottom: var(--space-sm);">🔍</div>
+          <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">Full-Text Search</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Instant client-side search across all your docs. No external service needed.</p>
+        </div>
+        <div style="padding: var(--space-lg); border: 1px solid var(--border); border-radius: var(--radius);">
+          <div style="font-size: 1.5rem; margin-bottom: var(--space-sm);">🌙</div>
+          <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">Dark Mode</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">System-aware dark/light toggle with no-flash prevention and persistence.</p>
+        </div>
+        <div style="padding: var(--space-lg); border: 1px solid var(--border); border-radius: var(--radius);">
+          <div style="font-size: 1.5rem; margin-bottom: var(--space-sm);">📝</div>
+          <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">MDX Content</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Write docs in Markdown with JSX components. Code blocks with syntax highlighting.</p>
+        </div>
+        <div style="padding: var(--space-lg); border: 1px solid var(--border); border-radius: var(--radius);">
+          <div style="font-size: 1.5rem; margin-bottom: var(--space-sm);">📚</div>
+          <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">Version Switcher</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Multiple doc versions with easy switching. Keep legacy docs accessible.</p>
+        </div>
+        <div style="padding: var(--space-lg); border: 1px solid var(--border); border-radius: var(--radius);">
+          <div style="font-size: 1.5rem; margin-bottom: var(--space-sm);">⚡</div>
+          <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">Lightning Fast</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Static generation with zero JavaScript overhead. Sub-second page loads.</p>
+        </div>
+        <div style="padding: var(--space-lg); border: 1px solid var(--border); border-radius: var(--radius);">
+          <div style="font-size: 1.5rem; margin-bottom: var(--space-sm);">🎨</div>
+          <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">Fully Themeable</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">CSS custom properties for every color and spacing. Match your brand perfectly.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section data-animate style="padding: var(--space-2xl) clamp(1rem, 5vw, 4rem); text-align: center; background: color-mix(in srgb, var(--accent) 5%, var(--bg));">
+      <h2 style="font-size: 2rem; margin-bottom: var(--space-md);">Ready to build beautiful docs?</h2>
+      <p style="color: var(--text-secondary); margin-bottom: var(--space-xl); max-width: 45ch; margin-inline: auto;">Start with our getting started guide and have your docs site running in minutes.</p>
+      <a href="/docs/getting-started" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;">Read the Docs →</a>
+    </section>
+
+    <!-- Footer -->
+    <footer style="padding: var(--space-xl) clamp(1rem, 5vw, 4rem); border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+      <p>&copy; {new Date().getFullYear()} Quill. Built with care.</p>
+    </footer>
+  </body>
+</html>

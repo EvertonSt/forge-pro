@@ -1,0 +1,47 @@
+# E2E + visual-regression image.
+#
+# Full workflow (build/run/regenerate/CI): README.md → "E2E + visual
+# regression in the container". Golden-change policy: CONTRIBUTING.md →
+# "The golden-change review checklist".
+#
+# Pins the exact Playwright version the repo uses (apps/app/package.json) and
+# installs a deterministic font set, so golden screenshots
+# (apps/app/e2e/visual.spec.ts) render identically on any machine that runs
+# this image — locally, in the e2e CI job, and in the golden-update
+# workflow. The goldens are generated INSIDE this image; never regenerate
+# them on a host OS, or font metrics will drift.
+#
+# The base image already ships Node 22 + the pinned Chromium and its system
+# dependencies. The repo's Playwright config launches the browser itself, so
+# the container just needs pnpm and fonts. The image runs as root, which
+# disables the Chromium sandbox — fine for trusted e2e code (Playwright
+# handles this: it adds --no-sandbox when running as root).
+#
+# Build:   docker build -f Dockerfile.e2e -t forge-pro-e2e .
+# Run:     docker run --rm --init --ipc=host -v "$PWD":/workspace forge-pro-e2e <cmd>
+
+FROM mcr.microsoft.com/playwright:v1.62.0-noble
+
+# Match the repo's packageManager pin (pnpm@11.20.0).
+RUN npm install -g pnpm@11.20.0
+
+# Deterministic font set. The goldens are rendered with exactly these fonts
+# and compared only inside this image, so the set is the contract — keep it
+# fixed. (Ubuntu Noble's default CJK-capable fallbacks differ subtly from
+# DejaVu-only systems; the pinned set below is what the goldens are
+# regenerated against. Change fonts -> regenerate goldens.)
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    fonts-liberation \
+    fonts-dejavu-core \
+    fonts-noto-color-emoji \
+    fonts-urw-base35 \
+    fonts-crosextra-carlito \
+    gh \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# Default command: run the app e2e suite (visual goldens + handler specs)
+# against the mounted workspace.
+CMD ["pnpm", "--filter", "@forge-pro/app", "exec", "playwright", "test"]

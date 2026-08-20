@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://pulse-template.netlify.app/sitemap.xml

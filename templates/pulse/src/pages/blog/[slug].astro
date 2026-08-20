@@ -1,0 +1,222 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await post.render();
+const allPosts = await getCollection('posts');
+const related = allPosts
+  .filter(p => p.slug !== post.slug && p.data.tags.some(t => post.data.tags.includes(t)))
+  .slice(0, 3);
+---
+
+<Layout title={post.data.title} description={post.data.description} ogImage={post.data.image}>
+  <div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
+
+  <article class="article">
+    <div class="container article-layout">
+      <div class="article-main prose">
+        <header class="article-header">
+          <div class="tags">
+            {post.data.tags.map(tag => (
+              <a href={`/blog/topic/${tag}`} class="tag">{tag}</a>
+            ))}
+          </div>
+          <h1>{post.data.title}</h1>
+          <p class="article-description">{post.data.description}</p>
+          <div class="article-meta">
+            <div class="author-avatar" aria-hidden="true">
+              {post.data.author.charAt(0)}
+            </div>
+            <div>
+              <strong>{post.data.author}</strong>
+              <span>{new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} · {Math.ceil(post.body?.split(' ').length / 200 || 5)} min read</span>
+            </div>
+          </div>
+        </header>
+
+        {post.data.image && (
+          <img src={post.data.image} alt="" class="article-hero-image" width="1200" height="600" loading="eager" />
+        )}
+
+        <div class="article-body">
+          <Content />
+        </div>
+
+        <!-- Share -->
+        <div class="article-share">
+          <h3>Share this article</h3>
+          <div class="share-buttons">
+            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="btn btn-outline">Twitter</a>
+            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="btn btn-outline">LinkedIn</a>
+            <button class="btn btn-outline copy-link" data-url={Astro.url.href}>Copy Link</button>
+          </div>
+        </div>
+
+        <!-- Author Bio -->
+        <div class="author-bio card">
+          <div class="author-avatar" aria-hidden="true">
+            {post.data.author.charAt(0)}
+          </div>
+          <div>
+            <h3>{post.data.author}</h3>
+            <p>Writer and builder exploring the intersection of technology and craft. Making things that last.</p>
+          </div>
+        </div>
+
+        <!-- Related Posts -->
+        {related.length > 0 && (
+          <div class="related-posts">
+            <h2>Continue Reading</h2>
+            <div class="post-grid">
+              {related.map(rp => (
+                <a href={`/blog/${rp.slug}`} class="post-card card">
+                  <h3>{rp.data.title}</h3>
+                  <p>{rp.data.description}</p>
+                  <span class="post-meta">{rp.data.author} · {new Date(rp.data.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Comments Placeholder -->
+        <div class="comments-section">
+          <h2>Comments</h2>
+          <div class="comments-placeholder card">
+            <p>Comments are powered by a third-party service. Connect your account to join the discussion.</p>
+            <button class="btn btn-outline">Load Comments</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOC Sidebar -->
+      {headings.length > 0 && (
+        <aside class="toc" aria-label="Table of contents">
+          <h3>On This Page</h3>
+          <nav>
+            {headings.filter(h => h.depth === 2 || h.depth === 3).map(heading => (
+              <a
+                href={`#${heading.slug}`}
+                style={`padding-left: ${heading.depth === 3 ? '1.5rem' : '0'}`}
+              >
+                {heading.text}
+              </a>
+            ))}
+          </nav>
+        </aside>
+      )}
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .reading-progress { z-index: 100; }
+
+  .article-layout {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: var(--space-2xl);
+    padding-block: var(--space-xl);
+  }
+  .article-main { min-width: 0; }
+
+  .article-header { margin-bottom: var(--space-xl); }
+  .article-header h1 { margin: var(--space-md) 0 var(--space-sm); }
+  .article-description { color: var(--text-secondary); font-size: 1.15rem; line-height: 1.6; margin-bottom: var(--space-lg); }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+  .author-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-family: var(--font-serif);
+    flex-shrink: 0;
+  }
+  .article-meta strong { color: var(--text); display: block; }
+  .article-hero-image {
+    width: 100%;
+    border-radius: var(--radius);
+    margin-bottom: var(--space-xl);
+  }
+
+  .article-body { margin-bottom: var(--space-2xl); }
+
+  .article-share {
+    padding: var(--space-lg);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-xl);
+  }
+  .article-share h3 { font-size: 0.9rem; margin-bottom: var(--space-md); }
+  .share-buttons { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+
+  .author-bio {
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+    margin-bottom: var(--space-2xl);
+  }
+  .author-bio h3 { margin-bottom: var(--space-xs); }
+  .author-bio p { color: var(--text-secondary); font-size: 0.9rem; margin: 0; }
+
+  .related-posts { margin-bottom: var(--space-2xl); }
+  .related-posts h2 { margin-top: 0; margin-bottom: var(--space-lg); }
+  .post-card { text-decoration: none; color: inherit; }
+  .post-card h3 { font-size: 1.05rem; margin-bottom: var(--space-sm); }
+  .post-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-sm); }
+  .post-meta { color: var(--text-secondary); font-size: 0.8rem; }
+
+  .comments-section h2 { margin-bottom: var(--space-md); }
+  .comments-placeholder { text-align: center; padding: var(--space-xl); }
+  .comments-placeholder p { color: var(--text-secondary); margin-bottom: var(--space-md); }
+
+  .toc { position: sticky; top: 5rem; align-self: start; }
+  .toc h3 { font-family: var(--font-sans); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); margin-bottom: var(--space-md); }
+
+  @media (max-width: 900px) {
+    .article-layout { grid-template-columns: 1fr; }
+    .toc { display: none; }
+  }
+</style>
+
+<script>
+  // Reading progress bar
+  const progressBar = document.getElementById('reading-progress');
+  window.addEventListener('scroll', () => {
+    const article = document.querySelector('.article-body');
+    if (!article || !progressBar) return;
+    const rect = article.getBoundingClientRect();
+    const total = article.offsetHeight - window.innerHeight;
+    const scrolled = -rect.top;
+    const pct = Math.min(100, Math.max(0, (scrolled / total) * 100));
+    progressBar.style.width = `${pct}%`;
+  });
+
+  // Copy link
+  document.querySelector('.copy-link')?.addEventListener('click', (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    navigator.clipboard.writeText(btn.dataset.url || location.href).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy Link'; }, 2000);
+    });
+  });
+</script>

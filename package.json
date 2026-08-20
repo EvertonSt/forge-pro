@@ -1,0 +1,42 @@
+{
+  "name": "forge-pro",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Forge Pro — an AI-native, self-QA'd marketplace for website templates and UI components.",
+  "packageManager": "pnpm@11.20.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "prettier": "@forge-pro/config/prettier",
+  "scripts": {
+    "dev": "turbo dev",
+    "dev:storefront": "pnpm --filter @forge-pro/storefront dev",
+    "dev:app": "pnpm --filter @forge-pro/app dev",
+    "dev:studio": "pnpm --filter @forge-pro/studio dev",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck",
+    "lint": "turbo lint",
+    "seed": "turbo run seed",
+    "test": "turbo test",
+    "e2e": "turbo e2e",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "bootstrap:e2e": "bash scripts/bootstrap-e2e.sh",
+    "desktop:prepare": "node apps/desktop/scripts/prepare-runtime.mjs",
+    "desktop:dev": "pnpm --filter @forge-pro/desktop dev",
+    "desktop:package": "pnpm --filter @forge-pro/desktop package",
+    "desktop:guide": "pnpm desktop:prepare && node apps/desktop/scripts/capture-guide-shots.mjs && node apps/desktop/scripts/make-guide-pdf.mjs",
+    "docker:build": "docker build -f Dockerfile.e2e -t forge-pro-e2e .",
+    "docker:e2e": "docker run --rm --init --ipc=host -v \"$PWD\":/workspace forge-pro-e2e pnpm --filter @forge-pro/app exec playwright test",
+    "docker:regenerate": "docker run --rm --init --ipc=host -v \"$PWD\":/workspace forge-pro-e2e bash -lc 'node apps/app/scripts/golden-drift-check.mjs apps/app/e2e/visual.spec.ts-snapshots --check-platform && mkdir -p /tmp/goldens-before && cp -n apps/app/e2e/visual.spec.ts-snapshots/*-linux.png /tmp/goldens-before/ 2>/dev/null || true; pnpm install --frozen-lockfile && pnpm turbo run build --filter=@forge-pro/app... && pnpm --filter @forge-pro/app exec playwright test e2e/visual --update-snapshots && node apps/app/scripts/golden-drift-check.mjs apps/app/e2e/visual.spec.ts-snapshots --before /tmp/goldens-before --max-ratio 0.05'"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "turbo": "^2.10.8",
+    "typescript": "^5.9.3",
+    "next": "^15.3.0"
+  },
+  "dependencies": {
+    "playwright": "^1.62.1"
+  }
+}

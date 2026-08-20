@@ -1,0 +1,58 @@
+---
+/* CookieConsent.astro — GDPR cookie consent banner */
+---
+
+<div class="cookie" id="cookie-consent" role="dialog" aria-label="Cookie consent" hidden>
+  <div class="container cookie__inner">
+    <p class="cookie__text">
+      We use cookies to improve your experience and analyze site traffic. By clicking "Accept", you consent to our use of cookies.
+      <a href="#" class="cookie__link">Learn more</a>
+    </p>
+    <div class="cookie__actions">
+      <button class="btn btn--ghost cookie__reject" id="cookie-reject">Reject</button>
+      <button class="btn btn--primary cookie__accept" id="cookie-accept">Accept</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cookie {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+    background: var(--bg-primary); border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    padding: var(--space-4) 0;
+    animation: slide-up 0.4s var(--ease);
+  }
+  .cookie[hidden] { display: none; }
+  .cookie__inner {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+  .cookie__text { font-size: var(--text-sm); color: var(--text-secondary); flex: 1; min-width: 20rem; }
+  .cookie__link { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  .cookie__actions { display: flex; gap: var(--space-2); flex-shrink: 0; }
+
+  @keyframes slide-up {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+</style>
+
+<script>
+  const banner = document.getElementById('cookie-consent');
+  const accepted = localStorage.getItem('cookie-consent');
+
+  if (!accepted) {
+    banner!.hidden = false;
+  }
+
+  document.getElementById('cookie-accept')?.addEventListener('click', () => {
+    localStorage.setItem('cookie-consent', 'accepted');
+    banner!.hidden = true;
+  });
+
+  document.getElementById('cookie-reject')?.addEventListener('click', () => {
+    localStorage.setItem('cookie-consent', 'rejected');
+    banner!.hidden = true;
+  });
+</script>

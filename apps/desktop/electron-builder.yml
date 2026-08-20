@@ -1,0 +1,48 @@
+# electron-builder config — Forge Pro desktop shell.
+#
+# The packaged app = the Electron shell (this package) + the staged Next.js
+# standalone runtime (apps/desktop/runtime/app, produced by scripts/
+# prepare-runtime.mjs and mounted as extraResources). The main process spawns
+# `server.js` from there with ELECTRON_RUN_AS_NODE=1 and opens the portal in
+# a native window.
+
+appId: pro.forge.desktop
+productName: Forge Pro
+directories:
+  output: release
+
+# The shell itself — just the main process + manifest.
+files:
+  - src/**
+  - package.json
+
+# The portal runtime, staged next to the binary. extraResources is NOT asar'd,
+# so the spawned `server.js` reads real files. Directory copies skip
+# node_modules by default, so the store is added as its own explicit matcher.
+extraResources:
+  - from: runtime/app
+    to: app
+    filter:
+      - "**/*"
+      - "!node_modules/**"
+  - from: runtime/app/node_modules
+    to: app/node_modules
+    filter:
+      - "**/*"
+  # The PDF user guide — opened from the app menu (File → Open user guide).
+  - from: Forge-Pro-Desktop-Guide.pdf
+    to: guide/Forge-Pro-Desktop-Guide.pdf
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  shortcutName: Forge Pro
+  artifactName: ${productName}-Setup-${version}.${ext}
+
+npmRebuild: false

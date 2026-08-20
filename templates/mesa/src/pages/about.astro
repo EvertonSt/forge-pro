@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About">
+  <section style="position: relative; height: 50vh; min-height: 300px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+    <img src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1920&h=800&fit=crop" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" />
+    <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.5);"></div>
+    <div style="position: relative; z-index: 1; text-align: center; color: #fff;">
+      <h1 style="color: #fff;">Our Story</h1>
+    </div>
+  </section>
+
+  <section style="padding-block: var(--space-2xl);">
+    <div class="container" style="max-width: 720px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2xl); margin-bottom: var(--space-2xl); align-items: center;">
+        <div>
+          <p style="font-family: var(--font-sans); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: var(--space-sm);">Est. 2019</p>
+          <h2 style="margin-bottom: var(--space-md);">From Farm to Table</h2>
+          <p style="color: var(--text-secondary); line-height: 1.8;">
+            Mesa was born from a simple belief: that great food starts with great ingredients. Our chef, trained in kitchens across Lyon and Tokyo, returned home with a vision—a restaurant where seasonal, locally-sourced produce takes center stage.
+          </p>
+        </div>
+        <div style="aspect-ratio: 4/5; border-radius: var(--radius); overflow: hidden;">
+          <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&h=750&fit=crop" alt="Chef preparing a dish" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" />
+        </div>
+      </div>
+
+      <div class="prose" style="max-width: 100%;">
+        <h2>Our Philosophy</h2>
+        <p style="color: var(--text-secondary); line-height: 1.8;">
+          We work directly with farms within 100 miles of our kitchen. Every morning, our team selects the day's ingredients—what arrives dictates the menu. This isn't a limitation; it's our greatest creative freedom.
+        </p>
+        <p style="color: var(--text-secondary); line-height: 1.8;">
+          Our wine list is curated by a certified sommelier, focusing on small-production vineyards that share our commitment to craft. The cocktail program celebrates seasonal produce and house-made ingredients.
+        </p>
+
+        <h2>The Space</h2>
+        <p style="color: var(--text-secondary); line-height: 1.8;">
+          Housed in a restored 1920s warehouse, Mesa balances industrial heritage with warm intimacy. Exposed brick, reclaimed wood, and soft lighting create a space that's elegant without pretension. The open kitchen invites you into the creative process.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); margin-block: var(--space-2xl); text-align: center;">
+          <div>
+            <div style="font-family: var(--font-serif); font-size: 2rem; font-weight: 700; color: var(--accent);">6+</div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem;">Years Open</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-serif); font-size: 2rem; font-weight: 700; color: var(--accent);">15</div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem;">Local Farm Partners</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-serif); font-size: 2rem; font-weight: 700; color: var(--accent);">4.9</div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem;">Star Rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  @media (max-width: 768px) {
+    section .container > div:first-child { grid-template-columns: 1fr !important; }
+  }
+</style>

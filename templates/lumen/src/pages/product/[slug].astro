@@ -1,0 +1,161 @@
+---
+/* Product detail page */
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import CartDrawer from '../../components/CartDrawer.astro';
+
+export function getStaticPaths() {
+  const products = {
+    'meridian-lamp': { name: 'Meridian Desk Lamp', price: 89, originalPrice: 129, category: 'Lighting', emoji: '💡', rating: 5, reviews: 48, description: 'Elegant, adjustable LED desk lamp with wireless charging base. Three color temperatures and dimming provide the perfect ambiance for focused work or relaxed reading.', features: ['LED with 50,000hr lifespan', 'Wireless Qi charging base', '3 color temperatures', 'Touch controls', 'USB-C port'], variants: ['Matte Black', 'Brushed Silver', 'Warm Brass'] },
+    'atlas-desk': { name: 'Atlas Standing Desk', price: 449, category: 'Furniture', emoji: '🪑', rating: 4, reviews: 32, description: 'Motorized sit-stand desk with programmable height presets. Whisper-quiet dual motors lift 120kg with zero wobble at any height.', features: ['Dual motor, 38mm/s', '4 programmable presets', 'Anti-collision sensor', 'Cable management tray', '120kg capacity'], variants: ['Oak Top + Black Frame', 'Walnut Top + White Frame', 'White Top + Silver Frame'] },
+  };
+  return Object.entries(products).map(([slug, product]) => ({ params: { slug }, props: { ...product, slug } }));
+}
+
+const { name, price, originalPrice, category, emoji, rating, reviews, description, features, variants, slug } = Astro.props;
+const discount = originalPrice ? Math.round((1 - price / originalPrice) * 100) : 0;
+---
+<Layout title={name} jsonLd={{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": name,
+  "description": description,
+  "offers": { "@type": "Offer", "price": price, "priceCurrency": "USD", "availability": "https://schema.org/InStock" }
+}}>
+  <Nav />
+  <CartDrawer />
+  <main id="main">
+    <section class="product section">
+      <div class="container">
+        <a href="/" class="product__back">← Back to Shop</a>
+        <div class="product__layout">
+          <div class="product__gallery">
+            <div class="product__main-img">
+              <span class="product__emoji">{emoji}</span>
+            </div>
+            <div class="product__thumbs">
+              {[1,2,3,4].map(i => (
+                <div class={`product__thumb ${i === 1 ? 'active' : ''}`}>
+                  <span style="font-size:1.5rem">{emoji}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="product__info">
+            <div class="product__category">{category}</div>
+            <h1 class="product__title">{name}</h1>
+            <div class="product__rating">
+              {'★'.repeat(rating)}{'☆'.repeat(5 - rating)}
+              <span>{reviews} reviews</span>
+            </div>
+            <div class="product__price">
+              <span class="product__current">${price.toFixed(2)}</span>
+              {originalPrice && <span class="product__original">${originalPrice.toFixed(2)}</span>}
+              {discount > 0 && <span class="badge--sale badge">Save {discount}%</span>}
+            </div>
+            <p class="product__desc">{description}</p>
+
+            <div class="product__variant-group">
+              <label class="product__label">Color / Finish</label>
+              <div class="product__variants">
+                {variants.map((v: string, i: number) => (
+                  <button class={`product__variant ${i === 0 ? 'active' : ''}`}>{v}</button>
+                ))}
+              </div>
+            </div>
+
+            <div class="product__qty-row">
+              <label class="product__label">Quantity</label>
+              <div class="product__qty">
+                <button class="product__qty-btn" id="qty-minus" aria-label="Decrease quantity">−</button>
+                <span class="product__qty-val" id="qty-val">1</span>
+                <button class="product__qty-btn" id="qty-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+
+            <button class="btn btn--primary btn--lg product__add-btn" id="add-to-cart" style="width:100%">
+              Add to Cart — ${price.toFixed(2)}
+            </button>
+
+            <ul class="product__features">
+              {features.map((f: string) => (
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><polyline points="3,8 7,12 13,4"/></svg>
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .product__back { display: inline-block; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem; transition: color 0.15s; }
+  .product__back:hover { color: var(--accent); }
+  .product__layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .product__gallery { position: sticky; top: 5rem; }
+  .product__main-img { aspect-ratio: 1; background: var(--bg-secondary); border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+  .product__emoji { font-size: 6rem; }
+  .product__thumbs { display: flex; gap: 0.75rem; }
+  .product__thumb { width: 4rem; height: 4rem; border-radius: var(--radius); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.15s; }
+  .product__thumb.active, .product__thumb:hover { border-color: var(--accent); }
+  .product__category { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; }
+  .product__title { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2rem); margin-bottom: 0.75rem; }
+  .product__rating { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #f59e0b; margin-bottom: 1rem; }
+  .product__rating span { color: var(--text-muted); }
+  .product__price { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 1rem; }
+  .product__current { font-size: 1.75rem; font-weight: 800; }
+  .product__original { font-size: 1rem; color: var(--text-muted); text-decoration: line-through; }
+  .product__desc { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem; }
+  .product__label { display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .product__variant-group { margin-bottom: 1.5rem; }
+  .product__variants { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .product__variant { padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.8125rem; transition: all 0.15s; }
+  .product__variant.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .product__variant:hover { border-color: var(--border-strong); }
+  .product__qty-row { margin-bottom: 1.5rem; }
+  .product__qty { display: flex; align-items: center; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); width: fit-content; }
+  .product__qty-btn { width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; transition: background 0.15s; }
+  .product__qty-btn:hover { background: var(--bg-secondary); }
+  .product__qty-val { width: 3rem; text-align: center; font-weight: 600; border-inline: 1px solid var(--border); padding: 0.5rem 0; }
+  .product__add-btn { margin-bottom: 1.5rem; }
+  .product__features { display: flex; flex-direction: column; gap: 0.75rem; }
+  .product__features li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; }
+  @media (max-width: 768px) {
+    .product__layout { grid-template-columns: 1fr; }
+    .product__gallery { position: static; }
+  }
+</style>
+
+<script define:vars={{ name, price, emoji, slug }}>
+  let qty = 1;
+  const qtyVal = document.getElementById('qty-val');
+  const addBtn = document.getElementById('add-to-cart');
+  const updatePrice = () => {
+    addBtn.textContent = 'Add to Cart — $' + (price * qty).toFixed(2);
+  };
+  document.getElementById('qty-minus')?.addEventListener('click', () => { if (qty > 1) { qty--; qtyVal.textContent = qty; updatePrice(); } });
+  document.getElementById('qty-plus')?.addEventListener('click', () => { qty++; qtyVal.textContent = qty; updatePrice(); });
+
+  document.querySelectorAll('.product__variant').forEach(v => {
+    v.addEventListener('click', () => {
+      document.querySelectorAll('.product__variant').forEach(b => b.classList.remove('active'));
+      v.classList.add('active');
+    });
+  });
+
+  addBtn?.addEventListener('click', () => {
+    const variant = document.querySelector('.product__variant.active')?.textContent || '';
+    const cart = JSON.parse(localStorage.getItem('lumen-cart') || '[]');
+    const existing = cart.find(i => i.name === name && i.variant === variant);
+    if (existing) existing.qty += qty;
+    else cart.push({ name, price, emoji, slug, variant, qty });
+    localStorage.setItem('lumen-cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cart-updated'));
+    addBtn.textContent = '✓ Added to Cart';
+    setTimeout(() => { updatePrice(); }, 1500);
+  });
+</script>

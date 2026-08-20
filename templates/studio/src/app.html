@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#e11d48" />
+  <link rel="icon" href="%sveltekit.assets%/favicon.svg" />
+  %sveltekit.head%
+  <script>
+    (function() {
+      var t = localStorage.getItem('studio-theme');
+      var p = window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t || p);
+    })();
+  </script>
+  <meta name="description" content="Studio — Creative agency crafting digital experiences that move people." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Studio — Creative Agency" />
+  <meta property="og:description" content="Creative agency crafting digital experiences that move people." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Studio — Creative Agency" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Studio","description":"Creative agency crafting digital experiences"}</script>
+  <!-- forge-pro:verify placeholder -->
+  <!-- <meta name="forge-pro:verify" content="YOUR_UNIQUE_TOKEN" /> -->
+</head>
+<body>
+  <a href="#main" class="sr-only">Skip to main content</a>
+  <div id="app">%sveltekit.body%</div>
+</body>
+</html>

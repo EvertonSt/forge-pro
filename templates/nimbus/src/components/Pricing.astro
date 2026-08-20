@@ -1,0 +1,189 @@
+---
+/* Pricing.astro — pricing table with monthly/annual toggle */
+const plans = [
+  {
+    name: 'Starter',
+    description: 'For small teams getting started',
+    monthly: 29,
+    annual: 24,
+    features: [
+      { text: 'Up to 5 team members', included: true },
+      { text: '100 deploys/month', included: true },
+      { text: 'Basic code review', included: true },
+      { text: 'Community support', included: true },
+      { text: 'Custom rules', included: false },
+      { text: 'Priority support', included: false },
+    ],
+    cta: 'Start Free Trial',
+    highlighted: false,
+  },
+  {
+    name: 'Pro',
+    description: 'For growing teams that need more',
+    monthly: 79,
+    annual: 66,
+    features: [
+      { text: 'Up to 20 team members', included: true },
+      { text: 'Unlimited deploys', included: true },
+      { text: 'Advanced AI code review', included: true },
+      { text: 'Priority support', included: true },
+      { text: 'Custom rules engine', included: true },
+      { text: 'Analytics dashboard', included: true },
+    ],
+    cta: 'Start Free Trial',
+    highlighted: true,
+    badge: 'Most Popular',
+  },
+  {
+    name: 'Enterprise',
+    description: 'For large organizations',
+    monthly: 199,
+    annual: 166,
+    features: [
+      { text: 'Unlimited team members', included: true },
+      { text: 'Unlimited everything', included: true },
+      { text: 'Custom AI models', included: true },
+      { text: 'Dedicated support', included: true },
+      { text: 'SLA guarantee', included: true },
+      { text: 'On-premise option', included: true },
+    ],
+    cta: 'Contact Sales',
+    highlighted: false,
+  },
+];
+---
+
+<section class="pricing section" id="pricing">
+  <div class="container">
+    <div class="pricing__header">
+      <span class="chip">Pricing</span>
+      <h2 class="pricing__title">Simple, transparent pricing</h2>
+      <p class="pricing__subtitle">Start free, scale as you grow. No hidden fees.</p>
+    </div>
+
+    <div class="pricing__toggle" role="radiogroup" aria-label="Billing period">
+      <button class="pricing__toggle-btn active" data-period="monthly" role="radio" aria-checked="true">Monthly</button>
+      <button class="pricing__toggle-btn" data-period="annual" role="radio" aria-checked="false">
+        Annual <span class="pricing__save-badge">Save 17%</span>
+      </button>
+    </div>
+
+    <div class="pricing__grid">
+      {plans.map(plan => (
+        <div class={`pricing__card ${plan.highlighted ? 'pricing__card--highlighted' : ''}`}>
+          {plan.badge && <div class="pricing__card-badge">{plan.badge}</div>}
+          <div class="pricing__card-header">
+            <h3 class="pricing__card-name">{plan.name}</h3>
+            <p class="pricing__card-desc">{plan.description}</p>
+            <div class="pricing__card-price">
+              <span class="pricing__card-currency">$</span>
+              <span class="pricing__card-amount" data-monthly={plan.monthly} data-annual={plan.annual}>{plan.monthly}</span>
+              <span class="pricing__card-period">/month</span>
+            </div>
+          </div>
+          <ul class="pricing__card-features">
+            {plan.features.map(f => (
+              <li class={`pricing__card-feature ${f.included ? '' : 'pricing__card-feature--excluded'}`}>
+                {f.included ? (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><polyline points="3,8 7,12 13,4"/></svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--text-tertiary)" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+                )}
+                {f.text}
+              </li>
+            ))}
+          </ul>
+          <a href="#demo" class={`btn ${plan.highlighted ? 'btn--primary' : 'btn--secondary'}`} style="width:100%">
+            {plan.cta}
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing__header { text-align: center; margin-bottom: var(--space-10); }
+  .pricing__title { font-size: var(--text-4xl); margin-top: var(--space-4); margin-bottom: var(--space-4); }
+  .pricing__subtitle { font-size: var(--text-lg); color: var(--text-secondary); }
+
+  .pricing__toggle {
+    display: flex; justify-content: center; gap: var(--space-2);
+    margin-bottom: var(--space-10); background: var(--bg-tertiary);
+    padding: var(--space-1); border-radius: var(--radius-full);
+    width: fit-content; margin-inline: auto;
+  }
+  .pricing__toggle-btn {
+    padding: var(--space-2) var(--space-5); border-radius: var(--radius-full);
+    font-size: var(--text-sm); font-weight: 600; color: var(--text-secondary);
+    transition: all var(--duration) var(--ease);
+    display: flex; align-items: center; gap: var(--space-2);
+  }
+  .pricing__toggle-btn.active {
+    background: var(--bg-primary); color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+  }
+  .pricing__save-badge {
+    font-size: var(--text-xs); background: #22c55e1a; color: #22c55e;
+    padding: 2px 8px; border-radius: var(--radius-full); font-weight: 700;
+  }
+
+  .pricing__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6);
+    align-items: start;
+  }
+  .pricing__card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-2xl); padding: var(--space-8);
+    position: relative; transition: all var(--duration-slow) var(--ease);
+  }
+  .pricing__card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+  .pricing__card--highlighted {
+    border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow-lg);
+    transform: scale(1.03);
+  }
+  .pricing__card--highlighted:hover { transform: scale(1.03) translateY(-4px); }
+  .pricing__card-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #fff; font-size: var(--text-xs); font-weight: 700;
+    padding: 4px 16px; border-radius: var(--radius-full);
+  }
+  .pricing__card-name { font-size: var(--text-xl); font-weight: 700; margin-bottom: var(--space-1); }
+  .pricing__card-desc { font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4); }
+  .pricing__card-price { display: flex; align-items: baseline; gap: 2px; margin-bottom: var(--space-6); }
+  .pricing__card-currency { font-size: var(--text-xl); font-weight: 700; color: var(--text-secondary); }
+  .pricing__card-amount { font-size: var(--text-5xl); font-weight: 800; letter-spacing: -0.025em; line-height: 1; }
+  .pricing__card-period { font-size: var(--text-sm); color: var(--text-secondary); margin-left: var(--space-1); }
+  .pricing__card-features {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+  .pricing__card-feature {
+    display: flex; align-items: center; gap: var(--space-3);
+    font-size: var(--text-sm);
+  }
+  .pricing__card-feature--excluded { opacity: 0.5; }
+
+  @media (max-width: 768px) {
+    .pricing__grid { grid-template-columns: 1fr; max-width: 28rem; margin-inline: auto; }
+    .pricing__card--highlighted { transform: none; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.pricing__toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pricing__toggle-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-checked', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-checked', 'true');
+      const period = (btn as HTMLElement).dataset.period;
+      document.querySelectorAll('.pricing__card-amount').forEach(el => {
+        const p = el as HTMLElement;
+        p.textContent = p.dataset[period || 'monthly'] || p.dataset.monthly;
+      });
+    });
+  });
+</script>

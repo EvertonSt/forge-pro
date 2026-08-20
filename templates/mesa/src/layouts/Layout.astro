@@ -1,0 +1,222 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Mesa — A modern fine dining experience. Seasonal ingredients, timeless flavors." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#b8860b" />
+    <title>{title} | Mesa</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${title} | Mesa`} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | Mesa`} />
+    <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'Restaurant', name: 'Mesa', description: 'A modern fine dining experience. Seasonal ingredients, timeless flavors.', address: { '@type': 'PostalAddress', streetAddress: '123 Oak Street', addressLocality: 'New York', addressRegion: 'NY', postalCode: '10001' }, telephone: '+1-212-555-1234', priceRange: '$$$' })} />
+    <!-- Forge Pro verify tag — INSERT YOUR TOKEN BELOW -->
+    <!-- <meta name="forge-pro:verify" content="YOUR_TOKEN_HERE" /> -->
+    <script is:inline>
+      (function() {
+        var s = localStorage.getItem('theme');
+        if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches))
+          document.documentElement.setAttribute('data-theme', 'dark');
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <a href="#main" class="sr-only">Skip to main content</a>
+
+    <header style="position: sticky; top: 0; z-index: 100; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);">
+      <div class="container" style="display: flex; align-items: center; justify-content: space-between; height: 4rem;">
+        <a href="/" style="font-family: var(--font-serif); font-weight: 700; font-size: 1.4rem; color: var(--text); text-decoration: none;">Mesa</a>
+        <nav style="display: flex; gap: var(--space-lg); align-items: center;" class="desktop-nav">
+          <a href="/#menu" style="color: var(--text-secondary); font-weight: 500; text-decoration: none;">Menu</a>
+          <a href="/#reservation" style="color: var(--text-secondary); font-weight: 500; text-decoration: none;">Reserve</a>
+          <a href="/about" style="color: var(--text-secondary); font-weight: 500; text-decoration: none;">About</a>
+          <a href="/#gallery" style="color: var(--text-secondary); font-weight: 500; text-decoration: none;">Gallery</a>
+          <a href="/#contact" style="color: var(--text-secondary); font-weight: 500; text-decoration: none;">Contact</a>
+        </nav>
+        <div style="display: flex; gap: var(--space-sm); align-items: center;">
+          <button id="theme-toggle" aria-label="Toggle dark mode" style="background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 0.35rem 0.5rem; cursor: pointer; font-size: 1rem;">☀️</button>
+          <a href="/#reservation" class="btn btn-primary btn-sm" style="display: none;" class="reserve-desktop">Reserve</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer style="background: var(--bg-dark); color: #a89f94; padding-block: var(--space-2xl); margin-top: var(--space-2xl);">
+      <div class="container footer-grid">
+        <div>
+          <div style="font-family: var(--font-serif); font-size: 1.4rem; color: #f0ebe5; margin-bottom: var(--space-sm);">Mesa</div>
+          <p style="font-size: 0.9rem; max-width: 28ch;">Seasonal ingredients, timeless flavors. A modern fine dining experience in the heart of the city.</p>
+        </div>
+        <div>
+          <h4 style="color: #f0ebe5; font-family: var(--font-sans); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--space-md);">Hours</h4>
+          <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: var(--space-xs);">
+            <span>Mon–Thu: 5pm – 10pm</span>
+            <span>Fri–Sat: 5pm – 11pm</span>
+            <span>Sun: 10am – 3pm (Brunch)</span>
+          </div>
+        </div>
+        <div>
+          <h4 style="color: #f0ebe5; font-family: var(--font-sans); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--space-md);">Navigate</h4>
+          <div style="display: flex; flex-direction: column; gap: var(--space-sm); font-size: 0.85rem;">
+            <a href="/#menu" style="color: #a89f94;">Menu</a>
+            <a href="/about" style="color: #a89f94;">About</a>
+            <a href="/#reservation" style="color: #a89f94;">Reservations</a>
+            <a href="/#gallery" style="color: #a89f94;">Gallery</a>
+          </div>
+        </div>
+        <div>
+          <h4 style="color: #f0ebe5; font-family: var(--font-sans); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--space-md);">Contact</h4>
+          <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: var(--space-xs);">
+            <span>123 Oak Street</span>
+            <span>New York, NY 10001</span>
+            <a href="tel:+12125551234" style="color: #a89f94;">(212) 555-1234</a>
+            <a href="mailto:hello@mesa.com" style="color: #a89f94;">hello@mesa.com</a>
+          </div>
+        </div>
+      </div>
+      <div class="container" style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid #3a352e; text-align: center; font-size: 0.8rem;">
+        <p>© {new Date().getFullYear()} Mesa. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        const html = document.documentElement;
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        const btn = document.getElementById('theme-toggle');
+        if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
+      });
+      // Set initial icon
+      const stored = localStorage.getItem('theme');
+      const isDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      const btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = isDark ? '🌙' : '☀️';
+    </script>
+
+    <style>
+      @media (max-width: 768px) {
+        .desktop-nav { display: none !important; }
+      }
+    
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+.toast {
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transform: translateX(120%);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+  max-width: 360px;
+}
+.toast.show { transform: translateX(0); opacity: 1; }
+.toast-success { background: #16a34a; }
+.toast-error { background: #dc2626; }
+.toast-info { background: #2563eb; }
+@media (prefers-reduced-motion: reduce) {
+  .toast { transition: opacity 0.01ms; transform: none; }
+  .toast.show { transform: none; }
+}
+
+/* Improved Button Interactions */
+.btn, button[role="button"] {
+  position: relative;
+  overflow: hidden;
+}
+.btn::after, button[role="button"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.3) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.btn:active::after, button[role="button"]:active::after {
+  opacity: 1;
+  transition: opacity 0s;
+}
+
+/* Smooth Focus Ring */
+:focus-visible {
+  outline: 2px solid var(--accent, #6366f1);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Card Hover Lift */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* Skeleton Pulse Animation */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* Page Transition Support */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: fade-out 0.15s ease-out; }
+::view-transition-new(root) { animation: fade-in 0.15s ease-in; }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Smooth Scroll Behavior */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+</style>
+  </body>
+</html>

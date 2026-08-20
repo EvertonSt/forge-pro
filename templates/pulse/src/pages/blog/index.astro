@@ -1,0 +1,148 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags))];
+---
+
+<Layout title="Blog" description="All articles on technology, creativity, and the craft of building.">
+  <section class="blog-hero">
+    <div class="container">
+      <h1>The Blog</h1>
+      <p>Thoughtful writing on technology, creativity, and building things that last.</p>
+    </div>
+  </section>
+
+  <section class="blog-content">
+    <div class="container blog-layout">
+      <div class="blog-main">
+        <!-- Search -->
+        <div class="search-box">
+          <input type="search" placeholder="Search articles..." aria-label="Search articles" id="search-input" />
+        </div>
+
+        <!-- Posts -->
+        <div class="post-list" id="post-list">
+          {sortedPosts.map(post => (
+            <a href={`/blog/${post.slug}`} class="post-item card" data-title={post.data.title.toLowerCase()} data-tags={post.data.tags.join(' ')}>
+              {post.data.image && (
+                <div class="post-item-image">
+                  <img src={post.data.image} alt="" loading="lazy" width="400" height="240" />
+                </div>
+              )}
+              <div class="post-item-content">
+                <div class="tags">
+                  {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
+                </div>
+                <h2>{post.data.title}</h2>
+                <p>{post.data.description}</p>
+                <div class="post-meta">
+                  <span>{post.data.author}</span>
+                  <span>· {new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+        <div class="no-results" hidden>
+          <p>No articles match your search. Try different keywords.</p>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="blog-sidebar">
+        <div class="sidebar-section">
+          <h3>Topics</h3>
+          <div class="sidebar-tags">
+            {allTags.map(tag => (
+              <a href={`/blog/topic/${tag}`} class="tag">{tag}</a>
+            ))}
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <h3>Newsletter</h3>
+          <p>Get the best articles delivered weekly.</p>
+          <form class="sidebar-newsletter" id="sidebar-newsletter">
+            <input type="email" placeholder="Email" required aria-label="Email address" />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .blog-hero {
+    padding: var(--space-2xl) 0 var(--space-xl);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-xl);
+  }
+  .blog-hero h1 { margin-bottom: var(--space-sm); }
+  .blog-hero p { color: var(--text-secondary); font-size: 1.1rem; }
+
+  .blog-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+  }
+  .blog-main { min-width: 0; }
+
+  .search-box { margin-bottom: var(--space-xl); }
+
+  .post-list { display: flex; flex-direction: column; gap: var(--space-lg); }
+  .post-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--space-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+  }
+  .post-item:hover { text-decoration: none; }
+  .post-item-image { border-radius: var(--radius); overflow: hidden; aspect-ratio: 16/10; }
+  .post-item-image img { width: 100%; height: 100%; object-fit: cover; }
+  .post-item-content h2 { font-size: 1.2rem; margin: var(--space-sm) 0; }
+  .post-item-content p { color: var(--text-secondary); font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .post-meta { color: var(--text-secondary); font-size: 0.8rem; margin-top: var(--space-sm); }
+  .no-results { padding: var(--space-xl); text-align: center; color: var(--text-secondary); }
+
+  .blog-sidebar { position: sticky; top: 5rem; align-self: start; }
+  .sidebar-section { margin-bottom: var(--space-xl); }
+  .sidebar-section h3 { font-family: var(--font-sans); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); margin-bottom: var(--space-md); }
+  .sidebar-tags { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+  .sidebar-section p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md); }
+  .sidebar-newsletter { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .sidebar-newsletter input { padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 0.9rem; }
+
+  @media (max-width: 900px) {
+    .blog-layout { grid-template-columns: 1fr; }
+    .blog-sidebar { display: none; }
+  }
+  @media (max-width: 600px) {
+    .post-item { grid-template-columns: 1fr; }
+    .post-item-image { display: none; }
+  }
+</style>
+
+<script>
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const posts = document.querySelectorAll<HTMLElement>('.post-item');
+  const noResults = document.querySelector('.no-results') as HTMLElement;
+
+  input?.addEventListener('input', () => {
+    const q = input.value.toLowerCase().trim();
+    let visible = 0;
+    posts.forEach(post => {
+      const title = post.dataset.title || '';
+      const tags = post.dataset.tags || '';
+      const match = !q || title.includes(q) || tags.includes(q);
+      post.hidden = !match;
+      if (match) visible++;
+    });
+    noResults.hidden = visible > 0;
+  });
+</script>

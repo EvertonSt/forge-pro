@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CatalogCard from '../components/CatalogCard.astro';
+import { getCatalog } from '../lib/catalog';
+
+const items = await getCatalog();
+const featured = items.filter((item) => item.qaBadge.status === 'verified').slice(0, 3);
+const showcase = featured.length > 0 ? featured : items.slice(0, 3);
+---
+
+<Layout title="Forge Pro — quality-tested templates & components">
+  <section class="py-16 text-center">
+    <p class="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-success-500/30 bg-success-500/10 px-3 py-1 text-xs font-medium text-success-600">
+      Every listing passes an automated quality gate before going live
+    </p>
+    <h1 class="mx-auto max-w-3xl text-4xl font-bold tracking-tight">
+      Templates and components that arrive <span class="text-brand-600">QA-verified</span>.
+    </h1>
+    <p class="mx-auto mt-4 max-w-2xl text-lg text-neutral-600">
+      Browse a marketplace where quality is proven, not promised — visual regression,
+      responsiveness, broken links, and Lighthouse scores, checked on every submission.
+    </p>
+    <div class="mt-8 flex justify-center gap-4">
+      <a
+        href="/templates"
+        class="rounded-lg bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700"
+      >
+        Browse the catalog
+      </a>
+    </div>
+  </section>
+
+  <section class="py-8">
+    <div class="mb-6 flex items-baseline justify-between">
+      <h2 class="text-2xl font-semibold tracking-tight">Featured</h2>
+      <a href="/templates" class="text-sm text-brand-600 hover:underline">View all →</a>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {showcase.map((item) => <CatalogCard item={item} />)}
+    </div>
+  </section>
+</Layout>

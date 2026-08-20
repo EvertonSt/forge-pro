@@ -1,0 +1,37 @@
+# Templates (deployed separately)
+templates/
+
+# Desktop app
+apps/desktop/
+
+# QA runner
+apps/qa-runner/
+
+# Build artifacts
+node_modules/
+.next/
+dist/
+out/
+.turbo/
+.astro/
+.svelte-kit/
+
+# Generated files
+qa-screenshots/
+Forge-Pro-Distributable.zip
+reports/
+.demo/
+.e2e-demo/
+test-results/
+playwright-report/
+
+# Large files
+*.zip
+*.tar.gz
+*.7z
+*.exe
+
+# Env files
+.env
+.env.local
+.env.*.local

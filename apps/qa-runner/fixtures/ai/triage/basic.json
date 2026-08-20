@@ -1,0 +1,19 @@
+{
+  "summary": "The page renders at all breakpoints, but one layout issue fails the gate.",
+  "failures": [
+    {
+      "id": "overflow@320",
+      "verdict": "template_defect",
+      "confidence": 0.95,
+      "reasoning": "A 480px-wide element exceeds the 320px viewport, producing real horizontal scroll.",
+      "suggestedFix": "Give the wide element a max-width of 100% and add overflow handling in its container."
+    },
+    {
+      "id": "console-errors",
+      "verdict": "harness_artifact",
+      "confidence": 0.6,
+      "reasoning": "The error originates from a third-party embed, not the template's own code.",
+      "suggestedFix": "Defer the embed until after load, or allowlist the third-party origin in the gate config."
+    }
+  ]
+}

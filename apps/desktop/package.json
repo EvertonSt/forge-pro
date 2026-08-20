@@ -1,0 +1,17 @@
+{
+  "name": "@forge-pro/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Forge Pro — desktop shell running the vendor portal in demo mode as a native Windows app.",
+  "author": "Forge Pro",
+  "main": "src/main.js",
+  "scripts": {
+    "dev": "node scripts/prepare-runtime.mjs && electron .",
+    "package": "node scripts/make-guide-pdf.mjs && node scripts/prepare-runtime.mjs && electron-builder --win nsis --x64",
+    "package:dir": "node scripts/prepare-runtime.mjs && electron-builder --win dir --x64"
+  },
+  "devDependencies": {
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12"
+  }
+}

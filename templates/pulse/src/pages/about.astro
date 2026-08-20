@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About" description="The story behind Pulse and the people who write here.">
+  <section class="about-hero">
+    <div class="container">
+      <div class="about-content">
+        <h1>About Pulse</h1>
+        <p class="about-lead">We believe the best ideas deserve more than a tweet. They deserve careful, considered writing that respects both the subject and the reader.</p>
+
+        <div class="about-body prose">
+          <h2>Why Pulse Exists</h2>
+          <p>Pulse started in 2023 as a simple blog. It grew into something more: a home for writers who refuse to sacrifice depth for speed. In a world drowning in content, we chose curation over volume.</p>
+          <p>Every article on Pulse goes through a rigorous process: research, multiple drafts, peer review, and a final edit for clarity. We publish fewer pieces so each one can breathe.</p>
+
+          <h2>What We Write About</h2>
+          <p>Technology, creativity, design, and the craft of building things that last. We're interested in the intersection of these domains—where engineering meets art, where systems thinking meets human insight.</p>
+          <p>We don't chase trends. We write about ideas that matter today and will still matter in five years.</p>
+
+          <h2>Our Values</h2>
+          <ul>
+            <li><strong>Depth over breadth.</strong> Better to write one excellent piece than five mediocre ones.</li>
+            <li><strong>Craft over convenience.</strong> Every word earns its place. No filler, no fluff.</li>
+            <li><strong>Independence over influence.</strong> We don't take sponsored content. Our only allegiance is to our readers.</li>
+            <li><strong>Community over audience.</strong> We're building a conversation, not a broadcast.</li>
+          </ul>
+
+          <h2>The Team</h2>
+          <p>Pulse is written by a small team of engineers, designers, and storytellers who have collectively shipped products used by millions. We write here because we love the craft.</p>
+        </div>
+
+        <div class="about-cta">
+          <a href="/blog" class="btn btn-primary">Read the Blog</a>
+          <a href="/newsletter" class="btn btn-outline">Subscribe to Newsletter</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .about-hero { padding: var(--space-2xl) 0; }
+  .about-content { max-width: 680px; }
+  .about-lead { color: var(--text-secondary); font-size: 1.2rem; line-height: 1.6; margin-top: var(--space-md); margin-bottom: var(--space-xl); }
+  .about-body h2 { margin-top: var(--space-xl); }
+  .about-cta { display: flex; gap: var(--space-sm); margin-top: var(--space-xl); }
+</style>

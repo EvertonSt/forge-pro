@@ -1,0 +1,270 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const menuCategories = [
+  {
+    name: 'Starters',
+    items: [
+      { name: 'Burrata & Heirloom Tomato', desc: 'San Marzano, aged balsamic, basil oil, toasted sourdough', price: 18, tags: ['veg'] },
+      { name: 'Tuna Tartare', desc: 'Yellowfin tuna, avocado mousse, crispy shallots, ponzu', price: 22, tags: ['gf'] },
+      { name: 'Wild Mushroom Soup', desc: 'Porcini, chanterelle, truffle cream, gruyère crouton', price: 16, tags: ['veg'] },
+      { name: 'Beef Carpaccio', desc: 'Wagyu, arugula, shaved parmesan, capers, lemon aioli', price: 24, tags: ['gf'] },
+    ],
+  },
+  {
+    name: 'Mains',
+    items: [
+      { name: 'Pan-Seared Salmon', desc: 'Wild-caught, lemon beurre blanc, asparagus, fingerling potatoes', price: 38, tags: ['gf'] },
+      { name: 'Dry-Aged Ribeye', desc: '28-day aged, bone marrow butter, roasted garlic, truffle fries', price: 58, tags: ['gf'] },
+      { name: 'Mushroom Risotto', desc: 'Arborio, wild mushrooms, parmesan, white truffle oil', price: 32, tags: ['veg', 'gf'] },
+      { name: 'Lamb Rack', desc: 'Herb-crusted, mint chimichurri, root vegetables, red wine jus', price: 52, tags: ['gf'] },
+      { name: 'Cauliflower Steak', desc: 'Whole roasted, romesco, pickled raisins, toasted almonds', price: 28, tags: ['vegan', 'gf'] },
+    ],
+  },
+  {
+    name: 'Desserts',
+    items: [
+      { name: 'Crème Brûlée', desc: 'Madagascar vanilla, fresh berries, candied mint', price: 14, tags: ['gf'] },
+      { name: 'Chocolate Fondant', desc: '70% Valrhona, salted caramel core, vanilla bean ice cream', price: 16, tags: ['veg'] },
+      { name: 'Panna Cotta', desc: 'Coconut cream, passion fruit coulis, toasted coconut', price: 14, tags: ['vegan', 'gf'] },
+    ],
+  },
+  {
+    name: 'Drinks',
+    items: [
+      { name: 'Classic Negroni', desc: 'Tanqueray gin, Campari, sweet vermouth, orange peel', price: 16, tags: [] },
+      { name: 'Old Fashioned', desc: 'Woodford Reserve bourbon, Angostura bitters, demerara', price: 18, tags: [] },
+      { name: 'Sommelier\'s Wine', desc: 'Ask your server for tonight\'s curated selection', price: 15, tags: [] },
+    ],
+  },
+];
+
+const galleryImages = [
+  { src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=600&fit=crop', alt: 'Fine dining plate' },
+  { src: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=600&fit=crop', alt: 'Grilled dish' },
+  { src: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&h=600&fit=crop', alt: 'Fresh salad' },
+  { src: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=600&fit=crop', alt: 'Artisan pizza' },
+  { src: 'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&h=600&fit=crop', alt: 'Elegant dessert' },
+  { src: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=600&h=600&fit=crop', alt: 'Cocktails' },
+  { src: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&h=600&fit=crop', alt: 'Restaurant interior' },
+  { src: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=600&h=600&fit=crop', alt: 'Wine pouring' },
+];
+
+const events = [
+  { title: 'Wine Pairing Dinner', date: 'Every Friday', desc: 'A five-course journey through Italian wine country, curated by our sommelier.' },
+  { title: 'Chef\'s Table Experience', date: 'Saturday Evenings', desc: 'An intimate 8-course tasting menu prepared live at our chef\'s counter.' },
+  { title: 'Sunday Jazz Brunch', date: 'Sundays 10am–3pm', desc: 'Live jazz, bottomless mimosas, and our celebrated brunch menu.' },
+];
+---
+
+<Layout title="Home">
+  <!-- Hero -->
+  <section style="position: relative; height: 85vh; min-height: 500px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&h=1080&fit=crop" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" loading="eager" />
+    <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));"></div>
+    <div style="position: relative; z-index: 1; text-align: center; padding: var(--space-xl); color: #fff;">
+      <p style="font-family: var(--font-sans); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: var(--space-md); opacity: 0.8;">Est. 2019 · New York</p>
+      <h1 style="font-size: clamp(2.5rem, 2rem + 3vw, 4.5rem); margin-bottom: var(--space-md); color: #fff;">Mesa</h1>
+      <p style="font-size: 1.15rem; max-width: 45ch; margin: 0 auto var(--space-xl); opacity: 0.9; line-height: 1.6;">Seasonal ingredients, timeless flavors. A modern fine dining experience crafted with passion and precision.</p>
+      <div style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
+        <a href="#reservation" class="btn btn-primary">Reserve a Table</a>
+        <a href="#menu" class="btn" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3);">View Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <section id="menu" data-animate style="padding-block: var(--space-2xl);">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: var(--space-2xl);">
+        <p style="font-family: var(--font-sans); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: var(--space-sm);">Our Menu</p>
+        <h2>Crafted with Care</h2>
+        <p style="color: var(--text-secondary); max-width: 50ch; margin: var(--space-md) auto 0;">Every dish tells a story of seasonal ingredients, culinary tradition, and creative passion.</p>
+      </div>
+
+      <div style="display: flex; gap: var(--space-sm); justify-content: center; margin-bottom: var(--space-xl); flex-wrap: wrap;">
+        <button class="diet-tag" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.4rem 1rem; cursor: pointer; font-size: 0.8rem;" data-filter="all">All</button>
+        <button class="diet-tag" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.4rem 1rem; cursor: pointer; font-size: 0.8rem;" data-filter="veg">Vegetarian</button>
+        <button class="diet-tag" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.4rem 1rem; cursor: pointer; font-size: 0.8rem;" data-filter="vegan">Vegan</button>
+        <button class="diet-tag" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.4rem 1rem; cursor: pointer; font-size: 0.8rem;" data-filter="gf">Gluten-Free</button>
+      </div>
+
+      {menuCategories.map(cat => (
+        <div style="margin-bottom: var(--space-2xl);">
+          <h3 style="font-family: var(--font-sans); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: var(--space-lg); padding-bottom: var(--space-sm); border-bottom: 2px solid var(--accent); display: inline-block;">{cat.name}</h3>
+          <div>
+            {cat.items.map(item => (
+              <div class="menu-item" data-tags={item.tags.join(',')}>
+                <div class="menu-item-info">
+                  <div class="menu-item-name">
+                    {item.name}
+                    {item.tags.map(tag => (
+                      <span class={`diet-tag diet-${tag}`}>{tag === 'veg' ? 'V' : tag === 'vegan' ? 'VG' : 'GF'}</span>
+                    ))}
+                  </div>
+                  <div class="menu-item-desc">{item.desc}</div>
+                </div>
+                <div class="menu-item-price">${item.price}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Reservation -->
+  <section id="reservation" data-animate style="padding-block: var(--space-2xl); background: color-mix(in srgb, var(--accent) 5%, var(--bg));">
+    <div class="container" style="max-width: 700px;">
+      <div style="text-align: center; margin-bottom: var(--space-xl);">
+        <p style="font-family: var(--font-sans); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: var(--space-sm);">Reservations</p>
+        <h2>Reserve Your Table</h2>
+      </div>
+
+      <form id="reservation-form" class="card reservation-form">
+        <div>
+          <label for="res-name" style="display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: var(--space-xs);">Name</label>
+          <input id="res-name" type="text" required placeholder="Your name" style="width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 0.9rem;" />
+        </div>
+        <div>
+          <label for="res-email" style="display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: var(--space-xs);">Email</label>
+          <input id="res-email" type="email" required placeholder="you@email.com" style="width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 0.9rem;" />
+        </div>
+        <div>
+          <label for="res-date" style="display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: var(--space-xs);">Date</label>
+          <input id="res-date" type="date" required style="width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 0.9rem;" />
+        </div>
+        <div>
+          <label for="res-time" style="display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: var(--space-xs);">Time</label>
+          <select id="res-time" required style="width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 0.9rem;">
+            <option value="">Select time</option>
+            <option>5:00 PM</option><option>5:30 PM</option><option>6:00 PM</option><option>6:30 PM</option>
+            <option>7:00 PM</option><option>7:30 PM</option><option>8:00 PM</option><option>8:30 PM</option>
+            <option>9:00 PM</option><option>9:30 PM</option>
+          </select>
+        </div>
+        <div>
+          <label for="res-guests" style="display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: var(--space-xs);">Party Size</label>
+          <select id="res-guests" required style="width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 0.9rem;">
+            <option value="">Select guests</option>
+            <option>1 Guest</option><option>2 Guests</option><option>3 Guests</option>
+            <option>4 Guests</option><option>5 Guests</option><option>6+ Guests</option>
+          </select>
+        </div>
+        <div>
+          <label for="res-occasion" style="display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: var(--space-xs);">Occasion (optional)</label>
+          <input id="res-occasion" type="text" placeholder="Birthday, anniversary..." style="width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 0.9rem;" />
+        </div>
+        <div style="grid-column: 1 / -1; text-align: center; margin-top: var(--space-sm);">
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Confirm Reservation</button>
+        </div>
+      </form>
+
+      <div id="reservation-success" hidden style="text-align: center; padding: var(--space-2xl);">
+        <div style="font-size: 3rem; margin-bottom: var(--space-md);">🎉</div>
+        <h3>Reservation Confirmed!</h3>
+        <p style="color: var(--text-secondary); margin-top: var(--space-sm);">We look forward to welcoming you. A confirmation email has been sent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events -->
+  <section style="padding-block: var(--space-2xl);">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: var(--space-2xl);">
+        <p style="font-family: var(--font-sans); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: var(--space-sm);">Events</p>
+        <h2>Special Experiences</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-lg);">
+        {events.map(ev => (
+          <div class="card" style="text-align: center;">
+            <p style="color: var(--accent); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-sm);">{ev.date}</p>
+            <h3 style="font-size: 1.15rem; margin-bottom: var(--space-sm);">{ev.title}</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">{ev.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery" data-animate style="padding-block: var(--space-2xl); background: var(--bg-dark);">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: var(--space-2xl);">
+        <p style="font-family: var(--font-sans); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: var(--space-sm);">Gallery</p>
+        <h2 style="color: #f0ebe5;">A Taste of Mesa</h2>
+      </div>
+      <div class="gallery-grid">
+        {galleryImages.map((img, i) => (
+          <div class="gallery-item" data-index={i}>
+            <img src={img.src} alt={img.alt} loading="lazy" width="250" height="250" />
+          </div>
+        ))}
+      </div>
+    </div>
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" hidden>
+      <button class="lightbox-close" aria-label="Close">&times;</button>
+      <img id="lightbox-img" src="" alt="" />
+    </div>
+  </section>
+
+  <!-- Contact / Map -->
+  <section id="contact" data-animate style="padding-block: var(--space-2xl);">
+    <div class="container contact-grid">
+      <div>
+        <p style="font-family: var(--font-sans); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: var(--space-sm);">Visit Us</p>
+        <h2 style="margin-bottom: var(--space-lg);">Find Mesa</h2>
+        <div style="display: flex; flex-direction: column; gap: var(--space-md); color: var(--text-secondary); font-size: 0.95rem;">
+          <div><strong style="color: var(--text);">Address</strong><br />123 Oak Street<br />New York, NY 10001</div>
+          <div><strong style="color: var(--text);">Phone</strong><br />(212) 555-1234</div>
+          <div><strong style="color: var(--text);">Email</strong><br />hello@mesa.com</div>
+          <div><strong style="color: var(--text);">Hours</strong><br />Mon–Thu: 5pm – 10pm<br />Fri–Sat: 5pm – 11pm<br />Sun: 10am – 3pm (Brunch)</div>
+        </div>
+      </div>
+      <div style="aspect-ratio: 4/3; background: var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+        <div style="text-align: center;">
+          <div style="font-size: 2rem; margin-bottom: var(--space-sm);">📍</div>
+          <p>Interactive map placeholder</p>
+          <p style="font-size: 0.8rem;">Embed Google Maps or Mapbox here</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Reservation form
+  document.getElementById('reservation-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    (e.target as HTMLElement).hidden = true;
+    document.getElementById('reservation-success').hidden = false;
+    window.showToast?.('Reservation confirmed! Check your email for details.', 'success', 4000);
+  });
+
+  // Menu filter
+  document.querySelectorAll('[data-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = (btn as HTMLElement).dataset.filter;
+      document.querySelectorAll('.menu-item').forEach(item => {
+        const tags = (item as HTMLElement).dataset.tags || '';
+        (item as HTMLElement).style.display = filter === 'all' || tags.includes(filter) ? '' : 'none';
+      });
+    });
+  });
+
+  // Lightbox
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+  document.querySelectorAll('.gallery-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const img = item.querySelector('img');
+      if (img && lightbox && lightboxImg) {
+        lightboxImg.src = img.src;
+        lightbox.hidden = false;
+      }
+    });
+  });
+  document.querySelector('.lightbox-close')?.addEventListener('click', () => { if (lightbox) lightbox.hidden = true; });
+  lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.hidden = true; });
+</script>

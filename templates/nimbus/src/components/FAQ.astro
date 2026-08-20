@@ -1,0 +1,84 @@
+---
+/* FAQ.astro — accordion FAQ section */
+const faqs = [
+  {
+    q: 'How does the AI code review work?',
+    a: 'Nimbus uses a custom-trained language model that understands your codebase context, coding conventions, and common bug patterns. It analyzes every pull request in seconds, providing inline suggestions, catching potential bugs, and enforcing your team\'s coding standards automatically.',
+  },
+  {
+    q: 'Can I try Nimbus before committing?',
+    a: 'Absolutely! Every plan starts with a 14-day free trial — no credit card required. You get full access to all features in your chosen plan, so you can make an informed decision.',
+  },
+  {
+    q: 'What frameworks and languages do you support?',
+    a: 'Nimbus supports all major languages (JavaScript, TypeScript, Python, Go, Rust, Java, C#, Ruby, PHP) and frameworks (React, Next.js, Vue, Svelte, Angular, Django, Rails, and more). Our AI models are trained on millions of repositories across the ecosystem.',
+  },
+  {
+    q: 'How does pricing work for growing teams?',
+    a: 'Our pricing scales with your team. The Starter plan covers up to 5 members, Pro up to 20, and Enterprise is unlimited. You can upgrade or downgrade anytime, and we prorate the difference.',
+  },
+  {
+    q: 'Is my code secure with Nimbus?',
+    a: 'Security is our top priority. We\'re SOC 2 Type II certified, use end-to-end encryption, and never store your source code beyond the analysis window. Your code is processed in isolated environments and immediately deleted after review.',
+  },
+  {
+    q: 'Can I self-host Nimbus?',
+    a: 'Enterprise customers can deploy Nimbus on their own infrastructure (AWS, GCP, Azure, or on-premise). This gives you full control over data residency, network access, and compliance requirements.',
+  },
+];
+---
+
+<section class="faq section" id="faq">
+  <div class="container container--narrow">
+    <div class="faq__header">
+      <span class="chip">FAQ</span>
+      <h2 class="faq__title">Frequently asked questions</h2>
+      <p class="faq__subtitle">Everything you need to know about Nimbus.</p>
+    </div>
+
+    <div class="faq__list" role="list">
+      {faqs.map((faq, i) => (
+        <details class="faq__item" role="listitem" open={i === 0}>
+          <summary class="faq__question">
+            <span>{faq.q}</span>
+            <svg class="faq__chevron" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,8 10,12 14,8"/></svg>
+          </summary>
+          <div class="faq__answer">
+            <p>{faq.a}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__header { text-align: center; margin-bottom: var(--space-10); }
+  .faq__title { font-size: var(--text-4xl); margin-top: var(--space-4); margin-bottom: var(--space-4); }
+  .faq__subtitle { font-size: var(--text-lg); color: var(--text-secondary); }
+
+  .faq__list { display: flex; flex-direction: column; gap: var(--space-3); }
+  .faq__item {
+    background: var(--bg-secondary); border-radius: var(--radius-xl);
+    border: 1px solid var(--border); overflow: hidden;
+    transition: border-color var(--duration) var(--ease);
+  }
+  .faq__item[open] { border-color: var(--accent); }
+  .faq__question {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+    padding: var(--space-5) var(--space-6); cursor: pointer;
+    font-size: var(--text-base); font-weight: 600; color: var(--text-primary);
+    list-style: none;
+  }
+  .faq__question::-webkit-details-marker { display: none; }
+  .faq__chevron {
+    flex-shrink: 0; transition: transform var(--duration) var(--ease);
+    color: var(--text-tertiary);
+  }
+  .faq__item[open] .faq__chevron { transform: rotate(180deg); }
+  .faq__answer {
+    padding: 0 var(--space-6) var(--space-6);
+    font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.7;
+    animation: fade-in 0.3s var(--ease);
+  }
+</style>

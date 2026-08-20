@@ -1,0 +1,41 @@
+name: build-e2e-image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - Dockerfile.e2e
+  workflow_dispatch:
+
+# Publish the pinned e2e image (Dockerfile.e2e) that the e2e and
+# visual-update workflows run in. Tagged by the pinned Playwright version so
+# a rebuild never silently changes the font environment mid-flight; bump the
+# tag when the base intentionally moves. First-time setup: run this workflow
+# once (Actions → build-e2e-image → Run workflow) — then the e2e job's
+# container reference resolves on every push/PR.
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.e2e
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/forge-pro-e2e:v1.62

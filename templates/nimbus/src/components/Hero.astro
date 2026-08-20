@@ -1,0 +1,90 @@
+---
+/* Hero.astro — animated hero with gradient mesh background */
+---
+
+<section class="hero section" id="hero">
+  <div class="gradient-mesh" aria-hidden="true"></div>
+  <div class="container hero__inner">
+    <div class="hero__badge animate-fade-in-up">
+      <span class="chip">✦ Now in Public Beta</span>
+    </div>
+
+    <h1 class="hero__title animate-fade-in-up animate-delay-1">
+      Build, ship, and scale<br />
+      <span class="hero__title-gradient">10x faster</span> with AI
+    </h1>
+
+    <p class="hero__subtitle animate-fade-in-up animate-delay-2">
+      Nimbus is the intelligent development platform that automates the tedious parts of shipping software — from code review to deployment — so your team can focus on what matters.
+    </p>
+
+    <div class="hero__actions animate-fade-in-up animate-delay-3">
+      <a href="#demo" class="btn btn--primary btn--lg">
+        Start Free Trial
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+      </a>
+      <a href="#features" class="btn btn--secondary btn--lg">
+        See How It Works
+      </a>
+    </div>
+
+    <div class="hero__proof animate-fade-in-up animate-delay-4">
+      <div class="hero__avatars">
+        <div class="hero__avatar" style="background: #6366f1;">A</div>
+        <div class="hero__avatar" style="background: #ec4899;">S</div>
+        <div class="hero__avatar" style="background: #f59e0b;">M</div>
+        <div class="hero__avatar" style="background: #10b981;">J</div>
+        <div class="hero__avatar" style="background: #8b5cf6;">K</div>
+      </div>
+      <div class="hero__proof-text">
+        <strong>2,400+</strong> teams already shipping with Nimbus
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative; overflow: hidden;
+    padding-top: clamp(7rem, 5rem + 6vw, 10rem);
+    padding-bottom: clamp(4rem, 3rem + 4vw, 6rem);
+    text-align: center;
+  }
+  .hero__inner { position: relative; z-index: 1; }
+  .hero__badge { margin-bottom: var(--space-6); }
+  .hero__title {
+    font-size: var(--text-5xl); font-weight: 800;
+    letter-spacing: -0.025em; margin-bottom: var(--space-6);
+    color: var(--text-primary);
+  }
+  .hero__title-gradient {
+    background: linear-gradient(135deg, var(--brand-400), var(--brand-600), #ec4899);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero__subtitle {
+    font-size: var(--text-lg); color: var(--text-secondary);
+    max-width: 38rem; margin-inline: auto; margin-bottom: var(--space-8);
+    line-height: 1.7;
+  }
+  .hero__actions {
+    display: flex; align-items: center; justify-content: center;
+    gap: var(--space-4); flex-wrap: wrap;
+    margin-bottom: var(--space-12);
+  }
+  .hero__proof {
+    display: flex; align-items: center; justify-content: center;
+    gap: var(--space-4); flex-wrap: wrap;
+  }
+  .hero__avatars { display: flex; }
+  .hero__avatar {
+    width: 36px; height: 36px; border-radius: var(--radius-full);
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--text-xs); font-weight: 700; color: #fff;
+    border: 2px solid var(--bg-primary); margin-left: -8px;
+  }
+  .hero__avatar:first-child { margin-left: 0; }
+  .hero__proof-text {
+    font-size: var(--text-sm); color: var(--text-secondary);
+  }
+</style>

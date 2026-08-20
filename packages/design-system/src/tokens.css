@@ -1,0 +1,64 @@
+/*
+ * Forge Pro design tokens — the single source for brand look & feel.
+ * Consumed by the storefront (Tailwind v4 theme) and the Next.js app.
+ * Prefix: --fp-
+ */
+
+:root {
+  /* Brand */
+  --fp-color-brand-50: #eef4ff;
+  --fp-color-brand-100: #dbe7fe;
+  --fp-color-brand-500: #3b82f6;
+  --fp-color-brand-600: #2563eb;
+  --fp-color-brand-700: #1d4ed8;
+
+  /* Success / QA */
+  --fp-color-success-500: #16a34a;
+  --fp-color-success-600: #15803d;
+
+  /* Danger */
+  --fp-color-danger-500: #dc2626;
+  --fp-color-danger-600: #b91c1c;
+
+  /* Neutrals */
+  --fp-color-neutral-50: #f9fafb;
+  --fp-color-neutral-100: #f3f4f6;
+  --fp-color-neutral-200: #e5e7eb;
+  --fp-color-neutral-400: #9ca3af;
+  --fp-color-neutral-600: #4b5563;
+  --fp-color-neutral-800: #1f2937;
+  --fp-color-neutral-900: #111827;
+
+  /* Typography */
+  --fp-font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fp-font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Menlo, monospace;
+  --fp-text-xs: 0.75rem;
+  --fp-text-sm: 0.875rem;
+  --fp-text-base: 1rem;
+  --fp-text-lg: 1.125rem;
+  --fp-text-xl: 1.25rem;
+  --fp-text-2xl: 1.5rem;
+  --fp-text-4xl: 2.25rem;
+
+  /* Spacing */
+  --fp-space-1: 0.25rem;
+  --fp-space-2: 0.5rem;
+  --fp-space-3: 0.75rem;
+  --fp-space-4: 1rem;
+  --fp-space-6: 1.5rem;
+  --fp-space-8: 2rem;
+  --fp-space-12: 3rem;
+  --fp-space-16: 4rem;
+
+  /* Radii */
+  --fp-radius-sm: 0.25rem;
+  --fp-radius-md: 0.5rem;
+  --fp-radius-lg: 0.75rem;
+  --fp-radius-full: 9999px;
+
+  /* Shadows */
+  --fp-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+  --fp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --fp-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}

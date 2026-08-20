@@ -1,0 +1,15 @@
+{
+  "name": "lumen-astro-template",
+  "version": "1.0.0",
+  "description": "Lumen — Premium E-commerce Storefront. Built with Astro.",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "start": "echo Preview with: npm run dev",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.10.0"
+  }
+}

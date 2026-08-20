@@ -1,0 +1,78 @@
+---
+/* Stats.astro — animated counter stats section */
+const stats = [
+  { value: 2400, suffix: '+', label: 'Teams using Nimbus', icon: '👥' },
+  { value: 98, suffix: '%', label: 'Uptime SLA', icon: '⚡' },
+  { value: 10, suffix: 'x', label: 'Faster deployments', icon: '🚀' },
+  { value: 50, suffix: 'M+', label: 'Lines analyzed', icon: '📊' },
+];
+---
+
+<section class="stats section">
+  <div class="container">
+    <div class="stats__grid">
+      {stats.map(stat => (
+        <div class="stats__item">
+          <span class="stats__icon">{stat.icon}</span>
+          <div class="stats__value" data-target={stat.value} data-suffix={stat.suffix}>
+            0{stat.suffix}
+          </div>
+          <div class="stats__label">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats {
+    background: var(--bg-inverse); color: var(--text-inverse);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .stats__grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-8);
+    text-align: center;
+  }
+  .stats__item { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+  .stats__icon { font-size: 1.5rem; margin-bottom: var(--space-1); }
+  .stats__value {
+    font-size: var(--text-4xl); font-weight: 800; letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stats__label { font-size: var(--text-sm); opacity: 0.8; }
+  @media (max-width: 640px) {
+    .stats__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<script>
+  function animateCounters() {
+    document.querySelectorAll('.stats__value').forEach(el => {
+      const target = parseInt((el as HTMLElement).dataset.target || '0');
+      const suffix = (el as HTMLElement).dataset.suffix || '';
+      const duration = 2000;
+      const start = performance.now();
+
+      function update(now: number) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(eased * target);
+        el.textContent = current.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    });
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounters();
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.5 });
+
+  const statsSection = document.querySelector('.stats');
+  if (statsSection) observer.observe(statsSection);
+</script>

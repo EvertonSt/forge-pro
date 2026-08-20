@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://studio-template.netlify.app/sitemap.xml

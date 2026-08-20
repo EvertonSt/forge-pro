@@ -1,0 +1,155 @@
+---
+/* DemoForm.astro — request demo form with client validation */
+---
+
+<section class="demo section" id="demo-form">
+  <div class="container container--narrow">
+    <div class="demo__card glass">
+      <div class="demo__header">
+        <span class="chip">Request a Demo</span>
+        <h2 class="demo__title">See Nimbus in action</h2>
+        <p class="demo__subtitle">Get a personalized walkthrough with our team. No commitment required.</p>
+      </div>
+
+      <form class="demo__form" id="demo-form" novalidate>
+        <div class="demo__row">
+          <div class="demo__field">
+            <label for="demo-name" class="demo__label">Full Name *</label>
+            <input type="text" id="demo-name" name="name" class="input" placeholder="Jane Smith" required autocomplete="name" />
+            <span class="demo__error" aria-live="polite"></span>
+          </div>
+          <div class="demo__field">
+            <label for="demo-email" class="demo__label">Work Email *</label>
+            <input type="email" id="demo-email" name="email" class="input" placeholder="jane@company.com" required autocomplete="email" />
+            <span class="demo__error" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="demo__row">
+          <div class="demo__field">
+            <label for="demo-company" class="demo__label">Company *</label>
+            <input type="text" id="demo-company" name="company" class="input" placeholder="Acme Inc." required autocomplete="organization" />
+            <span class="demo__error" aria-live="polite"></span>
+          </div>
+          <div class="demo__field">
+            <label for="demo-team" class="demo__label">Team Size</label>
+            <select id="demo-team" name="team_size" class="input">
+              <option value="">Select...</option>
+              <option value="1-5">1–5 engineers</option>
+              <option value="6-20">6–20 engineers</option>
+              <option value="21-50">21–50 engineers</option>
+              <option value="50+">50+ engineers</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="demo__field">
+          <label for="demo-message" class="demo__label">Tell us about your workflow</label>
+          <textarea id="demo-message" name="message" class="input demo__textarea" rows="4" placeholder="What challenges are you facing? What would you like to see in the demo?"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--lg demo__submit" style="width:100%">
+          <span class="demo__submit-text">Request Demo</span>
+          <span class="demo__submit-loading" hidden>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="animation: spin 1s linear infinite"><circle cx="10" cy="10" r="8" stroke-dasharray="40" stroke-dashoffset="12"/></svg>
+            Sending...
+          </span>
+        </button>
+      </form>
+
+      <div class="demo__success" hidden>
+        <div class="demo__success-icon">✓</div>
+        <h3 class="demo__success-title">Thank you!</h3>
+        <p class="demo__success-text">We've received your request. Our team will reach out within 24 hours to schedule your personalized demo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .demo { background: var(--bg-secondary); }
+  .demo__card {
+    border-radius: var(--radius-2xl); padding: var(--space-10);
+    box-shadow: var(--shadow-lg);
+  }
+  .demo__header { text-align: center; margin-bottom: var(--space-8); }
+  .demo__title { font-size: var(--text-3xl); margin-top: var(--space-4); margin-bottom: var(--space-2); }
+  .demo__subtitle { font-size: var(--text-base); color: var(--text-secondary); }
+
+  .demo__form { display: flex; flex-direction: column; gap: var(--space-5); }
+  .demo__row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+  .demo__field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .demo__label { font-size: var(--text-sm); font-weight: 600; color: var(--text-primary); }
+  .demo__error {
+    font-size: var(--text-xs); color: #ef4444; min-height: 1.2em;
+  }
+  .demo__textarea { resize: vertical; min-height: 6rem; }
+
+  .demo__submit-loading { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+  .demo__success { text-align: center; padding: var(--space-8) 0; animation: fade-in-up 0.5s var(--ease); }
+  .demo__success-icon {
+    width: 64px; height: 64px; border-radius: var(--radius-full);
+    background: #22c55e1a; color: #22c55e; font-size: 2rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto var(--space-4);
+  }
+  .demo__success-title { font-size: var(--text-2xl); margin-bottom: var(--space-2); }
+  .demo__success-text { font-size: var(--text-base); color: var(--text-secondary); max-width: 28rem; margin-inline: auto; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 640px) {
+    .demo__row { grid-template-columns: 1fr; }
+    .demo__card { padding: var(--space-6); }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('demo-form') as HTMLFormElement;
+  const success = document.querySelector('.demo__success') as HTMLElement;
+
+  function validate(field: HTMLInputElement): boolean {
+    const error = field.closest('.demo__field')?.querySelector('.demo__error') as HTMLElement;
+    let msg = '';
+
+    if (field.required && !field.value.trim()) {
+      msg = 'This field is required';
+    } else if (field.type === 'email' && field.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
+      msg = 'Please enter a valid email';
+    }
+
+    if (error) error.textContent = msg;
+    field.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    return !msg;
+  }
+
+  form?.querySelectorAll('input[required]').forEach(field => {
+    field.addEventListener('blur', () => validate(field as HTMLInputElement));
+    field.addEventListener('input', () => {
+      if ((field as HTMLInputElement).getAttribute('aria-invalid') === 'true') {
+        validate(field as HTMLInputElement);
+      }
+    });
+  });
+
+  form?.addEventListener('submit', e => {
+    e.preventDefault();
+    const inputs = form.querySelectorAll('input[required]');
+    let valid = true;
+    inputs.forEach(input => {
+      if (!validate(input as HTMLInputElement)) valid = false;
+    });
+
+    if (valid) {
+      const submitBtn = form.querySelector('.demo__submit') as HTMLButtonElement;
+      submitBtn.disabled = true;
+      submitBtn.querySelector('.demo__submit-text')!.textContent = '';
+      submitBtn.querySelector('.demo__submit-loading')!.hidden = false;
+
+      setTimeout(() => {
+        form.hidden = true;
+        success.hidden = false;
+      }, 1500);
+    }
+  });
+</script>

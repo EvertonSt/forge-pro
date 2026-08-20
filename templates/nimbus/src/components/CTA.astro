@@ -1,0 +1,44 @@
+---
+/* CTA.astro — final call-to-action section */
+---
+
+<section class="cta section" id="demo">
+  <div class="gradient-mesh" aria-hidden="true"></div>
+  <div class="container cta__inner">
+    <h2 class="cta__title">Ready to ship 10x faster?</h2>
+    <p class="cta__subtitle">Join 2,400+ teams already building with Nimbus. Start your free trial today — no credit card required.</p>
+    <div class="cta__actions">
+      <a href="#" class="btn btn--primary btn--lg">
+        Start Free Trial
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+      </a>
+      <a href="#" class="btn btn--secondary btn--lg">Talk to Sales</a>
+    </div>
+    <p class="cta__note">Free 14-day trial · No credit card · Cancel anytime</p>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative; overflow: hidden;
+    text-align: center;
+    background: var(--bg-inverse); color: var(--text-inverse);
+  }
+  .cta .gradient-mesh::before { background: var(--brand-500); opacity: 0.3; }
+  .cta .gradient-mesh::after { background: #ec4899; opacity: 0.2; }
+  .cta__inner { position: relative; z-index: 1; }
+  .cta__title {
+    font-size: var(--text-4xl); margin-bottom: var(--space-4);
+  }
+  .cta__subtitle {
+    font-size: var(--text-lg); opacity: 0.8; max-width: 36rem; margin-inline: auto;
+    margin-bottom: var(--space-8); line-height: 1.7;
+  }
+  .cta__actions {
+    display: flex; align-items: center; justify-content: center;
+    gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6);
+  }
+  .cta .btn--secondary { color: var(--text-inverse); border-color: rgba(255,255,255,0.3); }
+  .cta .btn--secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
+  .cta__note { font-size: var(--text-sm); opacity: 0.6; }
+</style>

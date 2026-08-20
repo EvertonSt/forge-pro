@@ -1,0 +1,29 @@
+{
+  "name": "@forge-pro/qa-runner",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "forge-qa": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.tests.json",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@forge-pro/db": "workspace:*",
+    "@forge-pro/shared-types": "workspace:*",
+    "playwright": "^1.62.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@forge-pro/config": "workspace:*",
+    "@types/node": "^24.0.0",
+    "eslint": "^10.8.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.66.0",
+    "vitest": "^3.2.4"
+  }
+}

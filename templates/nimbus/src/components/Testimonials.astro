@@ -1,0 +1,110 @@
+---
+/* Testimonials.astro — testimonial cards with marquee */
+const testimonials = [
+  {
+    name: 'Sarah Chen',
+    role: 'CTO at Dataflow',
+    content: 'Nimbus cut our deployment time from 45 minutes to under 5 minutes. The AI code review catches issues we used to miss entirely.',
+    avatar: 'S',
+    color: '#ec4899',
+  },
+  {
+    name: 'Marcus Williams',
+    role: 'Lead Engineer at ScaleUp',
+    content: 'We shipped 3x more features in Q3 after adopting Nimbus. The preview environments alone saved us hundreds of hours of QA.',
+    avatar: 'M',
+    color: '#f59e0b',
+  },
+  {
+    name: 'Aisha Patel',
+    role: 'VP Engineering at CloudBase',
+    content: 'The intelligent auto-scaling saved us $40K/month in infrastructure costs while keeping our p99 latency under 50ms.',
+    avatar: 'A',
+    color: '#6366f1',
+  },
+  {
+    name: 'James Rodriguez',
+    role: 'Founder at LaunchKit',
+    content: 'As a startup founder, Nimbus is my secret weapon. It\'s like having a senior DevOps engineer on the team from day one.',
+    avatar: 'J',
+    color: '#10b981',
+  },
+  {
+    name: 'Elena Kowalski',
+    role: 'Staff SRE at MegaCorp',
+    content: 'We evaluated every CI/CD platform on the market. Nimbus is the only one that actually delivered on its promises.',
+    avatar: 'E',
+    color: '#8b5cf6',
+  },
+  {
+    name: 'David Kim',
+    role: 'Engineering Manager at BuildFast',
+    content: 'Our team velocity increased 40% in the first month. The automated code review is genuinely better than most human reviewers.',
+    avatar: 'D',
+    color: '#ef4444',
+  },
+];
+---
+
+<section class="testimonials section" id="testimonials">
+  <div class="container">
+    <div class="testimonials__header">
+      <span class="chip">Testimonials</span>
+      <h2 class="testimonials__title">Loved by engineering teams worldwide</h2>
+      <p class="testimonials__subtitle">See what industry leaders are saying about Nimbus.</p>
+    </div>
+  </div>
+
+  <div class="testimonials__marquee">
+    <div class="testimonials__track">
+      {[...testimonials, ...testimonials].map(t => (
+        <div class="testimonials__card glass">
+          <div class="testimonials__stars" aria-label="5 out of 5 stars">
+            {'★★★★★'.split('').map(() => (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="#f59e0b"><path d="M8 1l2.1 4.3 4.7.7-3.4 3.3.8 4.7L8 11.8 3.8 14l.8-4.7L1.2 6l4.7-.7z"/></svg>
+            ))}
+          </div>
+          <p class="testimonials__content">"{t.content}"</p>
+          <div class="testimonials__author">
+            <div class="testimonials__avatar" style={`background: ${t.color}`}>{t.avatar}</div>
+            <div>
+              <div class="testimonials__name">{t.name}</div>
+              <div class="testimonials__role">{t.role}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials__header { text-align: center; margin-bottom: var(--space-10); }
+  .testimonials__title { font-size: var(--text-4xl); margin-top: var(--space-4); margin-bottom: var(--space-4); }
+  .testimonials__subtitle { font-size: var(--text-lg); color: var(--text-secondary); max-width: 32rem; margin-inline: auto; }
+
+  .testimonials__marquee { overflow: hidden; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+  .testimonials__track {
+    display: flex; gap: var(--space-6);
+    animation: marquee 60s linear infinite;
+    width: max-content;
+  }
+  .testimonials__card {
+    flex-shrink: 0; width: 22rem; padding: var(--space-6);
+    border-radius: var(--radius-xl);
+    display: flex; flex-direction: column; gap: var(--space-4);
+  }
+  .testimonials__stars { display: flex; gap: 2px; }
+  .testimonials__content {
+    font-size: var(--text-sm); color: var(--text-secondary);
+    line-height: 1.7; flex: 1;
+  }
+  .testimonials__author { display: flex; align-items: center; gap: var(--space-3); }
+  .testimonials__avatar {
+    width: 40px; height: 40px; border-radius: var(--radius-full);
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--text-sm); font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .testimonials__name { font-size: var(--text-sm); font-weight: 600; }
+  .testimonials__role { font-size: var(--text-xs); color: var(--text-tertiary); }
+</style>

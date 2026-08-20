@@ -1,0 +1,5 @@
+{
+  "extends": "@forge-pro/config/tsconfig/base.json",
+  "include": ["sanity.config.ts", "**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,77 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  const allTags = [...new Set(posts.flatMap(p => p.data.tags))];
+  return allTags.map(tag => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter(p => p.data.tags.includes(tag))
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<Layout title={`Topic: ${tag}`} description={`Articles about ${tag}`}>
+  <section class="blog-hero">
+    <div class="container">
+      <a href="/blog" class="back-link">← Back to Blog</a>
+      <h1>Topic: {tag}</h1>
+      <p>{posts.length} article{posts.length !== 1 ? 's' : ''} tagged "{tag}"</p>
+    </div>
+  </section>
+
+  <section class="blog-content">
+    <div class="container">
+      <div class="post-list">
+        {posts.map(post => (
+          <a href={`/blog/${post.slug}`} class="post-item card">
+            <div class="tags">
+              {post.data.tags.map(t => (
+                <span class={`tag ${t === tag ? 'tag-active' : ''}`}>{t}</span>
+              ))}
+            </div>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+            <div class="post-meta">
+              <span>{post.data.author}</span>
+              <span>· {new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .blog-hero {
+    padding: var(--space-2xl) 0 var(--space-xl);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-xl);
+  }
+  .back-link { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md); display: inline-block; }
+  .back-link:hover { color: var(--accent); }
+  .blog-hero h1 { margin: var(--space-sm) 0; }
+  .blog-hero p { color: var(--text-secondary); }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    max-width: 700px;
+    padding-bottom: var(--space-2xl);
+  }
+  .post-item { text-decoration: none; color: inherit; }
+  .post-item h2 { font-size: 1.2rem; margin: var(--space-sm) 0; }
+  .post-item p { color: var(--text-secondary); font-size: 0.95rem; }
+  .post-meta { color: var(--text-secondary); font-size: 0.8rem; margin-top: var(--space-sm); }
+  .tag-active { background: var(--accent); color: #fff; }
+</style>

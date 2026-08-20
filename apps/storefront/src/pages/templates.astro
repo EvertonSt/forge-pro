@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CatalogCard from '../components/CatalogCard.astro';
+import { getCatalog } from '../lib/catalog';
+
+const items = await getCatalog();
+const templates = items.filter((item) => item.kind === 'template');
+const components = items.filter((item) => item.kind === 'component');
+---
+
+<Layout title="Browse — Forge Pro" description="Browse quality-tested templates and components.">
+  <div class="mb-10">
+    <h1 class="text-3xl font-bold tracking-tight">Browse the catalog</h1>
+    <p class="mt-2 text-neutral-600">
+      Search and filtering arrive in the next session — for now, everything we have, in one place.
+    </p>
+  </div>
+
+  <section class="mb-10">
+    <h2 class="mb-4 text-xl font-semibold">Templates ({templates.length})</h2>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {templates.map((item) => <CatalogCard item={item} />)}
+    </div>
+  </section>
+
+  <section>
+    <h2 class="mb-4 text-xl font-semibold">Components ({components.length})</h2>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {components.map((item) => <CatalogCard item={item} />)}
+    </div>
+  </section>
+</Layout>

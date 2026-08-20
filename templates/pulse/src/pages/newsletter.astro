@@ -1,0 +1,116 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Newsletter" description="Subscribe to the Pulse weekly digest.">
+  <section class="newsletter-hero">
+    <div class="container">
+      <div class="newsletter-content">
+        <div class="newsletter-badge">Weekly Digest</div>
+        <h1>The Pulse Newsletter</h1>
+        <p class="newsletter-lead">Every Friday, we send one email with the week's best writing on technology, creativity, and craft. No spam. No sponsored content. Just good words.</p>
+
+        <form class="newsletter-form-lg" id="newsletter-page-form">
+          <div class="form-group">
+            <input type="email" placeholder="your@email.com" required aria-label="Email address" />
+            <button type="submit" class="btn btn-primary">Subscribe Free</button>
+          </div>
+          <div class="form-note">Join 8,000+ creators and builders. Unsubscribe anytime.</div>
+        </form>
+
+        <div class="newsletter-success-lg" hidden>
+          <div class="success-icon">✓</div>
+          <h2>You're in!</h2>
+          <p>Check your inbox for a confirmation email. Welcome to the community.</p>
+        </div>
+
+        <div class="newsletter-preview">
+          <h3>What You'll Get</h3>
+          <div class="preview-grid">
+            <div class="preview-card card">
+              <div class="preview-icon">📝</div>
+              <h4>Featured Article</h4>
+              <p>The week's best piece, selected by our editors.</p>
+            </div>
+            <div class="preview-card card">
+              <div class="preview-icon">🔗</div>
+              <h4>Curated Links</h4>
+              <p>5-7 links to articles, tools, and ideas worth your time.</p>
+            </div>
+            <div class="preview-card card">
+              <div class="preview-icon">💡</div>
+              <h4>Quick Insight</h4>
+              <p>One actionable takeaway you can apply today.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .newsletter-hero { padding: var(--space-2xl) 0; }
+  .newsletter-content { max-width: 680px; margin-inline: auto; text-align: center; }
+  .newsletter-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-md);
+  }
+  .newsletter-lead { color: var(--text-secondary); font-size: 1.15rem; margin: var(--space-md) 0 var(--space-xl); }
+
+  .form-group { display: flex; gap: var(--space-sm); max-width: 480px; margin-inline: auto; }
+  .form-group input {
+    flex: 1;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .form-group input:focus { outline: none; border-color: var(--accent); }
+  .form-note { color: var(--text-secondary); font-size: 0.85rem; margin-top: var(--space-md); }
+
+  .newsletter-success-lg { padding: var(--space-xl) 0; }
+  .success-icon {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: #16a34a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto var(--space-md);
+  }
+
+  .newsletter-preview { margin-top: var(--space-2xl); text-align: left; }
+  .newsletter-preview h3 { text-align: center; margin-bottom: var(--space-lg); }
+  .preview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md); }
+  .preview-card { text-align: center; }
+  .preview-icon { font-size: 2rem; margin-bottom: var(--space-sm); }
+  .preview-card h4 { margin-bottom: var(--space-xs); }
+  .preview-card p { color: var(--text-secondary); font-size: 0.9rem; margin: 0; }
+
+  @media (max-width: 600px) {
+    .form-group { flex-direction: column; }
+  }
+</style>
+
+<script>
+  document.getElementById('newsletter-page-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const success = document.querySelector('.newsletter-success-lg') as HTMLElement;
+    form.hidden = true;
+    success.hidden = false;
+  });
+</script>

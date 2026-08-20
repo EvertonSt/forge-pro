@@ -1,0 +1,16 @@
+{
+  "installCommand": "npm i -g pnpm@11.20.0 && pnpm install --no-frozen-lockfile",
+  "buildCommand": "npx turbo run build --filter=@forge-pro/app",
+  "outputDirectory": "apps/app/.next",
+  "framework": "nextjs",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

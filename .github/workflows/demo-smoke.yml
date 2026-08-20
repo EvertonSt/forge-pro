@@ -1,0 +1,131 @@
+name: demo-smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      demo_url:
+        description: 'Deployed demo base URL (defaults to the DEMO_URL repository variable)'
+        required: false
+        type: string
+  schedule:
+    # Nightly smoke of the live demo. Runs on the default branch; use the
+    # DEMO_URL repository variable to point it at the deployment. Workflow
+    # dispatches are not affected by the schedule.
+    - cron: '17 2 * * *'
+
+concurrency:
+  group: demo-smoke
+  cancel-in-progress: false
+
+jobs:
+  admin-smoke:
+    name: Admin e2e vs deployed demo
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Playwright browsers — restore from cache, then install if needed.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm --filter @forge-pro/app exec playwright install chromium --with-deps
+
+      - name: Resolve demo URL
+        id: url
+        run: |
+          url="${{ inputs.demo_url }}"
+          if [ -z "$url" ]; then
+            url="${{ vars.DEMO_URL }}"
+          fi
+          if [ -z "$url" ]; then
+            # Graceful skip: nightly runs with no configured target finish
+            # green instead of failing loudly. Manual dispatch should pass
+            # the input or set the variable. The pointer to the README's
+            # startup sequence keeps a fresh-fork run actionable.
+            echo "No demo target: pass the demo_url input or set the DEMO_URL repository variable"
+            echo "  (e.g. gh variable set DEMO_URL --body https://demo.example.com). Skipping."
+            echo "Fresh fork or new setup? The startup sequence — including the deployed demo — is"
+            echo "  README.md → 'First container run on a fresh fork'."
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skip=0" >> "$GITHUB_OUTPUT"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      # Production smoke check. E2E_BASE_URL disables the local webServer and
+      # points Playwright at the deployed instance (playwright.config.ts), so
+      # no next build or local store is needed. The target must be a
+      # demo-mode instance (ALLOW_DEMO_MODE=1, no Supabase) seeded from the
+      # fixtures — the admin spec asserts on the fixture rows. The vendor-form
+      # and visual specs skip themselves in remote mode by design.
+      - name: Run admin smoke
+        id: smoke
+        if: steps.url.outputs.skip != '1'
+        env:
+          E2E_BASE_URL: ${{ steps.url.outputs.url }}
+        run: pnpm --filter @forge-pro/app exec playwright test e2e/admin.spec.ts
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: demo-smoke-report
+          path: |
+            apps/app/playwright-report/
+            apps/app/test-results/
+          retention-days: 7
+
+      # Nightly runs (and any failing run) file one open issue per failure —
+      # deduplicated on a stable title so repeated nightly failures don't spam
+      # the tracker. Gated on the SMOKE step itself (not any step failure): an
+      # install/bootstrap failure never produced a smoke run, so it must not
+      # file a misleading "smoke failed" issue.
+      - name: File failure issue
+        if: steps.smoke.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="[demo-smoke] Nightly e2e failed against the demo"
+          # gh issue create errors on a missing label, so ensure it exists
+          # first (idempotent with --force).
+          gh label create demo-smoke --force 2>/dev/null || true
+          # Dedup: skip if an open issue with this title already exists.
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq length)
+          if [ "$open" -gt 0 ]; then
+            echo "Open issue already filed — not duplicating."
+            exit 0
+          fi
+          printf '%s\n' \
+            'The nightly demo smoke failed against the demo. See the workflow run for details and the `demo-smoke-report` artifact for the Playwright report + traces.' \
+            '' \
+            'This issue is filed automatically; it is closed automatically when a later smoke run passes.' \
+            > /tmp/demo-smoke-body.md
+          gh issue create \
+            --title "$title" \
+            --body-file /tmp/demo-smoke-body.md \
+            --label "demo-smoke"
+
+      # Self-heal: a passing nightly closes any open failure issue.
+      - name: Close resolved failure issue
+        if: success() && steps.url.outputs.skip != '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="[demo-smoke] Nightly e2e failed against the demo"
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[].number')
+          if [ -n "$open" ]; then
+            for num in $open; do
+              gh issue close "$num" --comment "Nightly demo smoke passed on ${{ github.ref_name }} — closing."
+            done
+          else
+            echo "No open failure issue — nothing to close."
+          fi

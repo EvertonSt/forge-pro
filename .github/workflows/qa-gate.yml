@@ -1,0 +1,83 @@
+name: qa-gate
+
+# The QA runner (docs/qa-gate.md §11). The app dispatches this workflow per
+# submission via repository_dispatch (event_type 'qa-run', client_payload
+# { jobId }) — see apps/app/src/lib/vendor/dispatch.ts. The runner claims the
+# job from Supabase, runs the suites against the submission's preview URL, and
+# POSTs the report to the app's /api/qa/complete, which advances the
+# submission and auto-publishes on pass.
+#
+# Exit-code contract (CLI): 0 = passed / already claimed (idempotent retry),
+# 1 = rejected (informational — the DB is authoritative), 2 = runner error or
+# completion callback failed. Only 2 fails this workflow; a rejection is the
+# gate working, not a pipeline failure.
+
+on:
+  repository_dispatch:
+    types: [qa-run]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    # Per-job concurrency: two submissions run in parallel, but a re-delivered
+    # dispatch of the same job waits (and then no-ops on the atomic claim).
+    concurrency:
+      group: qa-gate-${{ github.event.client_payload.jobId }}
+      cancel-in-progress: false
+    timeout-minutes: 15
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      # Completion callback (runner → app /api/qa/complete). Without both,
+      # the runner falls back to closing the job directly (dev only).
+      APP_INTERNAL_SECRET: ${{ secrets.APP_INTERNAL_SECRET }}
+      APP_BASE_URL: ${{ vars.APP_BASE_URL }}
+      # Recorded on the qa_jobs claim so logs map to the run that made them.
+      RUNNER_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter @forge-pro/qa-runner build
+
+      # Browser pinned by the package.json playwright version; cache it.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm --filter @forge-pro/qa-runner exec playwright install chromium --with-deps
+
+      - name: Run QA gate
+        id: gate
+        env:
+          JOB_ID: ${{ github.event.client_payload.jobId }}
+        run: |
+          set -u
+          code=0
+          node apps/qa-runner/dist/cli.js run --job "$JOB_ID" --out ./qa-run-output || code=$?
+          case "$code" in
+            0) echo "gate: passed (or job already claimed)" ;;
+            1) echo "gate: rejected — verdict delivered to the app; submission returns to the vendor for fixes" ;;
+            2) echo "::error::runner error or completion callback failed — job left for the app's reaper (qa-gate.md §10)" ;;
+            *) echo "::error::unexpected runner exit code $code" ;;
+          esac
+          echo "exit=$code" >> "$GITHUB_OUTPUT"
+          [ "$code" -lt 2 ]
+
+      # The report is the whole point of the run — upload it even when the
+      # verdict was rejected or the job failed.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa-report-${{ github.event.client_payload.jobId }}
+          # report.json + suite artifacts (diff images, link scans, M5 HTML
+          # report) land in the --out dir; retention keeps vendor-facing
+          # evidence around for the report view without manual downloads.
+          path: apps/qa-runner/qa-run-output/
+          if-no-files-found: warn
+          retention-days: 30

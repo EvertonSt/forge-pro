@@ -1,0 +1,50 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map(doc => ({
+    params: { slug: doc.slug },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content, headings } = await doc.render();
+
+const allDocs = (await getCollection('docs')).sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+const idx = allDocs.findIndex(d => d.slug === doc.slug);
+const prev = idx > 0 ? allDocs[idx - 1] : null;
+const next = idx < allDocs.length - 1 ? allDocs[idx + 1] : null;
+---
+
+<DocsLayout title={doc.data.title} description={doc.data.description} currentSlug={doc.slug}>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span>/</span>
+    <a href="/docs/getting-started">Docs</a>
+    <span>/</span>
+    <span>{doc.data.title}</span>
+  </nav>
+
+  <article class="prose">
+    <Content />
+  </article>
+
+  <!-- Prev / Next -->
+  <div class="page-nav">
+    {prev ? (
+      <a href={`/docs/${prev.slug}`}>
+        <span>← Previous</span>
+        <strong>{prev.data.title}</strong>
+      </a>
+    ) : <div />}
+    {next ? (
+      <a href={`/docs/${next.slug}`} style="text-align: right;">
+        <span>Next →</span>
+        <strong>{next.data.title}</strong>
+      </a>
+    ) : <div />}
+  </div>
+</DocsLayout>

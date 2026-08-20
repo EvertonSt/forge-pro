@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+@import '@forge-pro/design-system/tokens.css';
+
+html {
+  font-family: var(--fp-font-sans);
+  color: var(--fp-color-neutral-900);
+  background: var(--fp-color-neutral-50);
+}

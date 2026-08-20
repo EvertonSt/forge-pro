@@ -1,0 +1,14 @@
+{
+  "name": "@forge-pro/design-system",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./tokens.css": "./src/tokens.css"
+  },
+  "scripts": {
+    "build": "echo \"design-system: CSS tokens only, nothing to compile.\"",
+    "typecheck": "echo \"design-system: no TS.\"",
+    "lint": "echo \"design-system: no lintable TS.\"",
+    "test": "echo \"design-system: no tests.\""
+  }
+}

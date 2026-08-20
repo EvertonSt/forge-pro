@@ -1,0 +1,30 @@
+{
+  "name": "@forge-pro/payments",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "echo \"Payments tests land with checkout (Session 4).\""
+  },
+  "dependencies": {
+    "stripe": "^22.5.0"
+  },
+  "devDependencies": {
+    "@forge-pro/config": "workspace:*",
+    "@types/node": "^24.0.0",
+    "eslint": "^10.8.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.66.0"
+  }
+}

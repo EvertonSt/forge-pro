@@ -1,0 +1,95 @@
+---
+/* Blog post page — sample article */
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+export function getStaticPaths() {
+  return [
+    {
+      params: { slug: 'ai-code-review-best-practices' },
+      props: {
+        title: 'AI Code Review: Best Practices for 2026',
+        date: '2026-01-15',
+        readTime: '8 min',
+        category: 'Engineering',
+        content: `
+          <p>AI-powered code review has evolved dramatically over the past year. What started as simple linting rules has become sophisticated analysis that understands context, catches architectural issues, and suggests meaningful improvements.</p>
+
+          <h2>Why AI Code Review Matters</h2>
+          <p>Traditional code review is essential but time-consuming. Senior engineers spend hours each week reviewing pull requests, often catching only surface-level issues while missing deeper architectural concerns. AI code review complements human reviewers by handling the mechanical checks, freeing humans to focus on design decisions and business logic.</p>
+
+          <h2>Best Practices</h2>
+          <h3>1. Configure for Your Codebase</h3>
+          <p>The most effective AI review tools learn from your codebase. Feed them your coding conventions, architectural patterns, and common anti-patterns. Nimbus, for example, builds a profile of your team's style from your first 50 commits.</p>
+
+          <h3>2. Set Appropriate Strictness Levels</h3>
+          <p>Start with moderate strictness and tighten over time. Too many false positives erode trust; too few misses real issues. Find the sweet spot where 90%+ of suggestions are genuinely useful.</p>
+
+          <h3>3. Integrate, Don't Replace</h3>
+          <p>AI review works best as a supplement to human review, not a replacement. Use it to pre-screen PRs, catch obvious issues, and provide context for human reviewers.</p>
+
+          <h3>4. Track and Improve</h3>
+          <p>Measure the AI's accuracy over time. Which suggestions does your team accept? Which do they reject? Use this data to fine-tune the system and improve the feedback loop.</p>
+
+          <h2>The Future</h2>
+          <p>As language models improve, expect AI code review to move beyond syntax and style into architectural analysis, security auditing, and performance optimization. The tools that learn from your specific codebase will increasingly outperform generic rule sets.</p>
+
+          <p>The key takeaway: AI code review is a powerful accelerant, but only when configured thoughtfully and integrated into a healthy review culture. Start with the basics, measure what works, and iterate.</p>
+        `,
+      },
+    },
+  ];
+}
+
+const { title, date, readTime, category, content } = Astro.props;
+---
+
+<Layout title={title} description={`Blog post: ${title}`}>
+  <Nav />
+  <main id="main">
+    <article class="post section">
+      <div class="container container--narrow">
+        <header class="post__header">
+          <a href="/blog" class="post__back">← Back to Blog</a>
+          <span class="chip" style="margin-top: var(--space-4);">{category}</span>
+          <h1 class="post__title">{title}</h1>
+          <div class="post__meta">
+            <time datetime={date}>{new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+            <span>·</span>
+            <span>{readTime} read</span>
+          </div>
+        </header>
+
+        <div class="post__content" set:html={content} />
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .post__header { margin-bottom: var(--space-12); }
+  .post__back {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-size: var(--text-sm); color: var(--text-secondary);
+    transition: color var(--duration) var(--ease);
+  }
+  .post__back:hover { color: var(--accent); }
+  .post__title { font-size: var(--text-4xl); margin-top: var(--space-6); margin-bottom: var(--space-4); }
+  .post__meta {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-size: var(--text-sm); color: var(--text-tertiary);
+  }
+
+  .post__content { font-size: var(--text-base); line-height: 1.8; color: var(--text-secondary); }
+  .post__content :global(h2) {
+    font-size: var(--text-2xl); color: var(--text-primary);
+    margin-top: var(--space-10); margin-bottom: var(--space-4);
+  }
+  .post__content :global(h3) {
+    font-size: var(--text-xl); color: var(--text-primary);
+    margin-top: var(--space-6); margin-bottom: var(--space-3);
+  }
+  .post__content :global(p) { margin-bottom: var(--space-4); }
+</style>

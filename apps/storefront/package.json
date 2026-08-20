@@ -1,0 +1,35 @@
+{
+  "name": "@forge-pro/storefront",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "lint": "eslint .",
+    "test": "echo \"Storefront tests land with the browse/search UI (Session 3).\""
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.2",
+    "@forge-pro/cms": "workspace:*",
+    "@forge-pro/design-system": "workspace:*",
+    "@forge-pro/shared-types": "workspace:*",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@forge-pro/config": "workspace:*",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "eslint": "^10.8.0",
+    "eslint-plugin-astro": "^3.1.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.66.0"
+  }
+}

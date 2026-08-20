@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Broken fixture</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; }
+      body { font-family: system-ui, sans-serif; }
+      header, main { padding: 1rem; }
+      header { background: #1f2937; color: #fff; }
+      /* Deliberately wider than a 320px viewport → horizontal overflow. */
+      .wide { width: 480px; background: #fee2e2; padding: 1rem; }
+    </style>
+    <script>
+      console.error('fixture: deliberate console error');
+    </script>
+  </body>
+  <body>
+    <header><h1>Broken fixture</h1></header>
+    <main>
+      <p>This page must fail smoke checks.</p>
+      <div class="wide">I overflow the 320px viewport.</div>
+    </main>
+    <!-- No <footer> on purpose: the probe must fail. -->
+  </body>
+</html>
