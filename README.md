@@ -1,5 +1,7 @@
 # Forge Pro
 
+[![CI](https://github.com/EvertonSt/forge-pro/actions/workflows/ci.yml/badge.svg)](https://github.com/EvertonSt/forge-pro/actions)
+
 An AI-native, **self-QA'd** marketplace for website templates and individual UI
 components. The defining feature: every vendor-submitted item is automatically
 quality-tested by a Playwright-based QA gate (visual regression, responsive
