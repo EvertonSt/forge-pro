@@ -53,6 +53,7 @@ const { title, description = "Mesa — A modern fine dining experience. Seasonal
         <div style="display: flex; gap: var(--space-sm); align-items: center;">
           <button id="theme-toggle" aria-label="Toggle dark mode" style="background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 0.35rem 0.5rem; cursor: pointer; font-size: 1rem;">☀️</button>
           <a href="/#reservation" class="btn btn-primary btn-sm" style="display: none;" class="reserve-desktop">Reserve</a>
+          <button id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false" style="display: none; background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 0.35rem 0.5rem; cursor: pointer; font-size: 1.2rem; line-height: 1;">☰</button>
         </div>
       </div>
     </header>
@@ -217,6 +218,44 @@ const { title, description = "Mesa — A modern fine dining experience. Seasonal
   }
 }
 
+
+  .mobile-menu {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--bg); padding: var(--space-xl);
+    display: flex; flex-direction: column;
+    animation: fadeIn 0.2s ease-out;
+  }
+  .mobile-menu-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: var(--space-2xl);
+  }
+  .mobile-nav { display: flex; flex-direction: column; gap: var(--space-lg); }
+  .mobile-nav a {
+    font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600;
+    color: var(--text); text-decoration: none;
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-nav a:hover { color: var(--accent); }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @media (max-width: 768px) {
+    #mobile-menu-btn { display: block !important; }
+  }
 </style>
+  
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="mobile-menu" hidden>
+      <div class="mobile-menu-header">
+        <a href="/" style="font-family: var(--font-serif); font-weight: 700; font-size: 1.4rem; color: var(--text); text-decoration: none;">Mesa</a>
+        <button id="mobile-menu-close" aria-label="Close menu" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text);">&times;</button>
+      </div>
+      <nav class="mobile-nav">
+        <a href="/#menu">Menu</a>
+        <a href="/#reservation">Reserve</a>
+        <a href="/about">About</a>
+        <a href="/#gallery">Gallery</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
   </body>
 </html>
